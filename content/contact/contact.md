@@ -22,13 +22,15 @@ content:
       id:
     netlify:
       # Enable CAPTCHA challenge to reduce spam?
-      captcha: false
+      captcha: true
 
   # Contact details (edit or remove options as required)
-  email: hmarti33@uwo.ca
+  # email: hmarti33 (at) uwo (dot) ca
   # phone: 519 521 6849
   address:
-    street: Western University, Social Science Faculty, Deparment of Economics
+    street: |
+      Deparment of Economics, Faculty of Social Science Faculty,
+      Western University 
     city: London
     region: 'ON'
     postcode: 'N6A 5C2'
@@ -47,6 +49,10 @@ content:
       icon_pack: fab
       name: DM Me
       link: 'https://twitter.com/Twitter'
+    - icon: linkedin
+      icon_pack: fab
+      name: Message Me
+      link: 'https://www.linkedin.com/in/hansmartinez'
     - icon: video
       icon_pack: fas
       name: Zoom Me

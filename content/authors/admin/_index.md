@@ -26,15 +26,18 @@ social:
 - icon: twitter
   icon_pack: fab
   link: https://twitter.com/Hans_Mtz
-- icon: graduation-cap
-  icon_pack: fas
-  link: https://scholar.google.com/citations?hl=es&user=vx3_gR4AAAAJ&view_op=list_works&gmla=AJsN-F5_7HF89Oy5iGIsS4wa4lb0_xG1PCNpUNw5apSXgJyyWmddZ_4nkwx9p7QRoFhKh7vmYEFjuFyysw4fQm76a6TNX42O6Q
-- icon: github
-  icon_pack: fab
-  link: https://github.com/hans-mtz
 - icon: linkedin
   icon_pack: fab
   link: https://www.linkedin.com/in/hansmartinez
+- icon: github
+  icon_pack: fab
+  link: https://github.com/hans-mtz
+- icon: graduation-cap
+  icon_pack: fas
+  link: https://scholar.google.com/citations?hl=es&user=vx3_gR4AAAAJ&view_op=list_works&gmla=AJsN-F5_7HF89Oy5iGIsS4wa4lb0_xG1PCNpUNw5apSXgJyyWmddZ_4nkwx9p7QRoFhKh7vmYEFjuFyysw4fQm76a6TNX42O6Q
+- icon: researchgate
+  icon_pack: fab
+  link: https://www.researchgate.net/profile/Hans-Martinez
 superuser: true
 title: Hans Martinez
 ---
