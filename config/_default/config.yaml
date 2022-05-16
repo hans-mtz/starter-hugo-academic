@@ -7,7 +7,7 @@ theme:
 # This file is formatted using YAML syntax - learn more at https://learnxinyminutes.com/docs/yaml/
 
 title: Hans Martinez # Website name
-baseURL: 'https://example.com/' # Website URL
+baseURL: 'https://hansmartinez.com/' # Website URL
 
 ############################
 ## LANGUAGE
