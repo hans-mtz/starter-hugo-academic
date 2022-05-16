@@ -1,77 +1,46 @@
 ---
-# Display name
-title: Nelson Bighetti
-
-# Is this the primary user of the site?
-superuser: true
-
-# Role/position/tagline
-role: Professor of Artificial Intelligence
-
-# Organizations/Affiliations to show in About widget
-organizations:
-  - name: Stanford University
-    url: https://www.stanford.edu/
-
-# Short bio (displayed in user profile at end of posts)
-bio: My research interests include distributed robotics, mobile computing and programmable matter.
-
-# Interests to show in About widget
-interests:
-  - Artificial Intelligence
-  - Computational Linguistics
-  - Information Retrieval
-
-# Education to show in About widget
+bio: Economics Ph.D. student at Western University
 education:
   courses:
-    - course: PhD in Artificial Intelligence
-      institution: Stanford University
-      year: 2012
-    - course: MEng in Artificial Intelligence
-      institution: Massachusetts Institute of Technology
-      year: 2009
-    - course: BSc in Artificial Intelligence
-      institution: Massachusetts Institute of Technology
-      year: 2008
-
-# Social/Academic Networking
-# For available icons, see: https://wowchemy.com/docs/getting-started/page-builder/#icons
-#   For an email link, use "fas" icon pack, "envelope" icon, and a link in the
-#   form "mailto:your-email@example.com" or "/#contact" for contact widget.
-social:
-  - icon: envelope
-    icon_pack: fas
-    link: '/#contact'
-  - icon: twitter
-    icon_pack: fab
-    link: https://twitter.com/GeorgeCushen
-  - icon: graduation-cap # Alternatively, use `google-scholar` icon from `ai` icon pack
-    icon_pack: fas
-    link: https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ
-  - icon: github
-    icon_pack: fab
-    link: https://github.com/gcushen
-  - icon: linkedin
-    icon_pack: fab
-    link: https://www.linkedin.com/
-
-# Link to a PDF of your resume/CV.
-# To use: copy your resume to `static/uploads/resume.pdf`, enable `ai` icons in `params.toml`,
-# and uncomment the lines below.
-# - icon: cv
-#   icon_pack: ai
-#   link: uploads/resume.pdf
-
-# Enter email to display Gravatar (if Gravatar enabled in Config)
-email: ''
-
-# Highlight the author in author lists? (true/false)
+  - course: Ph.D. in Economics
+    institution: Western University
+    year: 
+  - course: MSc in Economics and Industrial Organization
+    institution: UANL
+    year: 2016
+    
+email: "hmarti33@uwo.ca"
 highlight_name: true
+interests:
+- Industrial Organization
+- Applied Microeconomics
+- Machine Learning and Causal Inference
+organizations:
+- name: Western University
+  url: https://economics.uwo.ca
+role: Applied Economist and Data Scientist
+social:
+- icon: envelope
+  icon_pack: fas
+  link: mailto:<hmarti33@uwo.ca>
+- icon: twitter
+  icon_pack: fab
+  link: https://twitter.com/Hans_Mtz
+- icon: graduation-cap
+  icon_pack: fas
+  link: https://scholar.google.com/citations?hl=es&user=vx3_gR4AAAAJ&view_op=list_works&gmla=AJsN-F5_7HF89Oy5iGIsS4wa4lb0_xG1PCNpUNw5apSXgJyyWmddZ_4nkwx9p7QRoFhKh7vmYEFjuFyysw4fQm76a6TNX42O6Q
+- icon: github
+  icon_pack: fab
+  link: https://github.com/hans-mtz
+- icon: linkedin
+  icon_pack: fab
+  link: https://www.linkedin.com/in/hansmartinez
+superuser: true
+title: Hans Martinez
 ---
 
-Nelson Bighetti is a professor of artificial intelligence at the Stanford AI Lab. His research interests include distributed robotics, mobile computing and programmable matter. He leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.
+Hans Martinez is a Ph.D. student at Western University. His research interests span Industrial Organization, Applied Microeconomics, Political Economy, Measurement Error, and the intersection between Causal Inference and Machine Learning. Growing up in a single-parent home in northern Mexico, he is a first-generation doctoral student abroad. Currently, he's trying to navigate the hidden curriculum in academia.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.
+He's probably fighting his code right now or working on some slides for an upcoming presentation. He should be writing, though. Pray for him.
 
-{{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/demo_resume.pdf" "newtab" >}}resumé{{< /staticref >}}.
+{{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/HansCV.pdf" "newtab" >}}resumé{{< /staticref >}}.

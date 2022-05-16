@@ -1,0 +1,1074 @@
+[
+	{
+		"id": "AK2020",
+		"type": "article-journal",
+		"abstract": "A long-standing question about consumer behavior is whether individuals’ observed purchase decisions satisfy the revealed preference (RP) axioms of the utility maximization theory (UMT). Researchers using survey or experimental panel data sets on prices and consumption to answer this question face the well-known problem of measurement error. We show that ignoring measurement error in the RP approach may lead to overrejection of the UMT. To solve this problem, this paper proposes a new statistical RP framework for consumption panel data sets that allows for testing the UMT in the presence of measurement error. Our test is applicable to all consumer models that can be characterized by their first-order conditions. Our approach is nonparametric, allows for unrestricted heterogeneity in preferences, and requires only a centering condition on measurement error. We develop two applications that provide new evidence about the UMT. First, we find support in a survey dataset for the dynamic and time-consistent UMT in single-individual households, in the presence of nonclassical measurement error in consumption. In the second application, we cannot reject the static UMT in a widely used experimental dataset where measurement error in prices is assumed to be the result of price misperception due to the experimental design. The first finding stands in contrast to the conclusions drawn from the deterministic RP test of Browning (1989). The second finding reverses the conclusions drawn from the deterministic RP test of Afriat (1967) and Varian (1982).",
+		"container-title": "Review of Economic Studies",
+		"DOI": "10.1093/restud/rdaa067",
+		"ISSN": "23318422",
+		"note": "publisher: arXiv",
+		"page": "1-52",
+		"title": "Stochastic revealed preferences with measurement error",
+		"volume": "0",
+		"author": [
+			{
+				"family": "Aguiar",
+				"given": "Victor H."
+			},
+			{
+				"family": "Kashaev",
+				"given": "Nail"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					10,
+					11
+				]
+			]
+		}
+	},
+	{
+		"id": "Nevo2001",
+		"type": "article-journal",
+		"abstract": "The ready-to-eat cereal industry is characterized by high concentration, high price-cost margins, large advertising-to-sales ratios, and numerous introductions of new products. Previous researchers have concluded that the ready-to-eat cereal industry is a classic example of an industry with nearly collusive pricing behavior and intense nonprice competition. This paper empirically examines this conclusion. In particular, I estimate price-cost margins, but more importantly I am able empirically to separate these margins Ž. Ž. into three sources: i that which is due to product differentiation; ii that which is due to Ž. multi-product firm pricing; and iii that due to potential price collusion. The results suggest that given the demand for different brands of cereal, the first two effects explain most of the observed price-cost margins. I conclude that prices in the industry are consistent with noncollusive pricing behavior, despite the high price-cost margins. Leading firms are able to maintain a portfolio of differentiated products and influence the perceived product quality. It is these two factors that lead to high price-cost margins.",
+		"container-title": "Econometrica",
+		"issue": "2",
+		"page": "307-342",
+		"title": "Measuring market power in the ready-to-eat cereal industry",
+		"volume": "69",
+		"author": [
+			{
+				"family": "Nevo",
+				"given": "Aviv"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2001"
+				]
+			]
+		}
+	},
+	{
+		"id": "bcs2021",
+		"type": "report",
+		"abstract": "Models of firm conduct are the cornerstone of both theoretical and empirical work in industrial organization. A recent contribution (Berry and Haile, 2014) has suggested the use of exclusion restrictions to test alternative conduct models. We propose a pairwise testing procedure based on this idea and show that the power of the test to discriminate between models is tied to the formulation of those restrictions as moments and how they reflect the nonlinearity of equilibrium markups. We apply this test to the ready-to-eat cereal market using detailed scanner and consumer data to evaluate the \"common ownership\" hypothesis, which has received significant attention. Although we show that the potential magnitude of common ownership effects would be large, our test finds that standard own-firm profit maximization is more consistent with the data.",
+		"title": "Common Ownership and Competition in the Ready-To-Eat Cereal Industry *",
+		"author": [
+			{
+				"family": "Backus",
+				"given": "Matthew"
+			},
+			{
+				"family": "Conlon",
+				"given": "Christopher"
+			},
+			{
+				"family": "Sinkinson",
+				"given": "Michael"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "Schennach2014",
+		"type": "article-journal",
+		"abstract": "This paper introduces a general method to convert a model defined by moment conditions that involve both observed and unobserved variables into equivalent mo- ment conditions that involve only observable variables. This task can be accomplished without introducing infinite-dimensional nuisance parameters using a least favorable entropy-maximizing distribution.We demonstrate, through examples and simulations, that this approach covers a wide class of latent variables models, including some game- theoretic models and models with limited dependent variables, interval-valued data, errors-in-variables, or combinations thereof. Both point- and set-identified models are transparently covered. In the latter case, the method also complements the recent lit- erature on generic set-inference methods by providing the moment conditions needed to construct a generalized method of moments-type objective function for a wide class of models. Extensions of the method that cover conditional moments, independence restrictions, and some state-space models are also given.",
+		"container-title": "Econometrica",
+		"DOI": "10.3982/ecta9748",
+		"ISSN": "0012-9682",
+		"issue": "1",
+		"note": "publisher: The Econometric Society",
+		"page": "345-385",
+		"title": "Entropic Latent Variable Integration via Simulation",
+		"volume": "82",
+		"author": [
+			{
+				"family": "Schennach",
+				"given": "Susane M."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2014"
+				]
+			]
+		}
+	},
+	{
+		"id": "Carvajal2014",
+		"type": "article-journal",
+		"abstract": "We develop revealed preference tests for models of multi-product oligopoly, building on the work in Carvajal et al. (Econometrica 81(6):2351–2379, 2013). We analyze a Cournot model with multiple goods and show that it has testable restrictions when at least one good is produced by two or more firms. We also develop a revealed preference test for Bertrand oligopoly in a setting where each firm produces a single differentiated good, and these goods are potentially substitutes for each other. Our tests require qualitative assumptions on the shape of the demand curves and (in the Bertrand case) their evolution across observations, but they do not rely on the estimation of market demand.",
+		"container-title": "Economic Theory",
+		"DOI": "10.1007/s00199-014-0843-x",
+		"ISSN": "14320479",
+		"issue": "2",
+		"note": "publisher: Springer Science and Business Media, LLC",
+		"page": "253-277",
+		"title": "A nonparametric analysis of multi-product oligopolies",
+		"volume": "57",
+		"author": [
+			{
+				"family": "Carvajal",
+				"given": "Andrés"
+			},
+			{
+				"family": "Deb",
+				"given": "Rahul"
+			},
+			{
+				"family": "Fenske",
+				"given": "James"
+			},
+			{
+				"family": "Quah",
+				"given": "John K.H."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2014",
+					10,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "Carvajal2013",
+		"type": "article-journal",
+		"abstract": "The aim of this paper is to develop revealed preference tests for Cournot equilibrium. The tests are akin to the widely used revealed preference tests for consumption, but have to take into account the presence of strategic interaction in a game-theoretic setting. The tests take the form of linear programs, the solutions to which also allow us to recover cost information on the firms. To check that these nonparametric tests are sufficiently discriminating to reject real data, we apply them to the market for crude oil. © 2013 The Econometric Society.",
+		"container-title": "Econometrica",
+		"DOI": "10.3982/ecta10175",
+		"ISSN": "0012-9682",
+		"issue": "6",
+		"note": "publisher: The Econometric Society",
+		"page": "2351-2379",
+		"title": "Revealed Preference Tests of the Cournot Model",
+		"volume": "81",
+		"author": [
+			{
+				"family": "Carvajal",
+				"given": "Andrés"
+			},
+			{
+				"family": "Deb",
+				"given": "Rahul"
+			},
+			{
+				"family": "Fenske",
+				"given": "James"
+			},
+			{
+				"family": "Quah",
+				"given": "John K.-H."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2013"
+				]
+			]
+		}
+	},
+	{
+		"id": "FHS2008",
+		"type": "article-journal",
+		"abstract": "We investigate the nature of selection and productivity growth in industries where we observe producer-level quantities and prices separately. We show there are important differences between revenue and physical productivity. Because physical productivity is inversely correlated with price while revenue productivity is positively correlated with price, previous work linking (revenue-based) productivity to survival confounded the separate and opposing effects of technical efficiency and demand on survival, understating the true impacts of both. Further, we find that young producers charge lower prices than incumbents. Thus the literature understates new producers' productivity advantages and entry's contribution to aggregate productivity growth.",
+		"container-title": "American Economic Review",
+		"DOI": "10.1257/aer.98.1.394",
+		"ISSN": "00028282",
+		"issue": "1",
+		"page": "394-425",
+		"title": "Reallocation, firm turnover, and efficiency: Selection on productivity or profitability?",
+		"volume": "98",
+		"author": [
+			{
+				"family": "Foster",
+				"given": "Lucia"
+			},
+			{
+				"family": "Haltiwanger",
+				"given": "John"
+			},
+			{
+				"family": "Syverson",
+				"given": "Chad"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2008",
+					3
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/ZKY5W4YW",
+		"type": "report",
+		"note": "volume: 68\nissue: 4",
+		"page": "997-1010",
+		"title": "Monotone Instrumental Variables: With an Application to the Returns to Schooling",
+		"author": [
+			{
+				"family": "Manski",
+				"given": "Charles F"
+			},
+			{
+				"family": "Pepper",
+				"given": "John V"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2000"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/Z9HVYERQ",
+		"type": "article-journal",
+		"container-title": "The Quarterly Journal of Economics",
+		"issue": "1",
+		"page": "73-97",
+		"title": "Cyclical behavior of strategic inventories",
+		"volume": "104",
+		"author": [
+			{
+				"literal": "Rotemberg, J."
+			},
+			{
+				"literal": "Saloner, G."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1989",
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "Rotemberg1986",
+		"type": "article-journal",
+		"container-title": "The American Economic Review",
+		"issue": "3",
+		"page": "390-407",
+		"title": "A supergame - Theoretic model of price wars during booms",
+		"URL": "https://www.jstor.org/stable/1813358",
+		"volume": "76",
+		"author": [
+			{
+				"family": "Rotemberg",
+				"given": "J."
+			},
+			{
+				"literal": "Saloner, G."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					9,
+					8
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1986",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/VRTFIA7X",
+		"type": "chapter",
+		"abstract": "Monte Carlo simulation methods can be used to numerically evaluate expectations of functions of random variables (e.g., posterior moments of parameters of interest) for which no analytical expressions are available. They consist of generating random draws from the relevant distribution and replacing expectations by arithmetic means across such draws. Under appropriate technical conditions, the (statistical) accuracy of Monte Carlo estimates is inversely proportional to the number of draws. In cases where a sampling density is not available, which produces sufficiently accurate estimates, one will try to construct an auxiliary sampling density, which is called an importance function. The ratio between the integrand and the selected importance function defines the corresponding remainder function. The initial expectation is then estimated by the arithmetic mean of realizations of the remainder function under random draws from the importance function. An efficient importance function is one which closely resembles the initial integrand under an appropriate metric and, thereby, produces accurate Monte Carlo estimates under as few draws as possible. The article discusses several methods for constructing efficient importance functions at a sufficient level of generality.",
+		"container-title": "International Encyclopedia of the Social & Behavioral Sciences: Second Edition",
+		"ISBN": "978-0-08-097087-5",
+		"note": "DOI: 10.1016/B978-0-08-097086-8.42148-3",
+		"page": "758-762",
+		"publisher": "Elsevier Inc.",
+		"title": "Monte Carlo Methods and Bayesian Computation: Importance Sampling",
+		"author": [
+			{
+				"family": "Liesenfeld",
+				"given": "Roman"
+			},
+			{
+				"family": "Richard",
+				"given": "Jean Francois"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2015",
+					3,
+					26
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/2GTDZZ7S",
+		"type": "article-journal",
+		"abstract": "An algorithm for sampling from non-log-concave multivariate distributions is proposed, which improves the adaptive rejection Metropolis sampling (ARMS) algorithm by incorporating the hit and run sampling. It is not rare that the ARMS is trapped away from some subspace with significant probability in the support of the multivariate distribution. While the ARMS updates samples only in the directions that are parallel to dimensions, our proposed method, the hit and run ARMS (HARARMS), updates samples in arbitrary directions determined by the hit and run algorithm, which makes it almost not possible to be trapped in any isolated subspaces. The HARARMS performs the same as ARMS in a single dimension while more reliable in multidimensional spaces. Its performance is illustrated by a Bayesian free-knot spline regression example. We showed that it overcomes the well-known ‘lethargy’ property and decisively find the global optimal number and locations of the knots of the spline function.",
+		"container-title": "Journal of Statistical Computation and Simulation",
+		"DOI": "10.1080/00949655.2015.1046074",
+		"ISSN": "15635163",
+		"issue": "5",
+		"note": "arXiv: 1503.02222\npublisher: Taylor and Francis Ltd.",
+		"page": "973-985",
+		"title": "Hit and run ARMS: adaptive rejection Metropolis sampling with hit and run random direction",
+		"volume": "86",
+		"author": [
+			{
+				"family": "Zhang",
+				"given": "Huaiye"
+			},
+			{
+				"family": "Wu",
+				"given": "Yuefeng"
+			},
+			{
+				"family": "Cheng",
+				"given": "Lulu"
+			},
+			{
+				"family": "Kim",
+				"given": "Inyoung"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					3,
+					23
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/ISTPKRJA",
+		"type": "report",
+		"abstract": "REFERENCES Linked references are available on JSTOR for this article: https://www.jstor.org/stable/1390645?seq=1&cid=pdf-reference#references_tab_contents You may need to log in to JSTOR to access the linked references. JSTOR is a not-for-profit service that helps scholars, researchers, and students discover, use, and build upon a wide range of content in a trusted digital archive. We use information technology and tools to increase productivity and facilitate new forms of scholarship. For more information about JSTOR, please contact support@jstor.org. We consider the performance of three Monte Carlo Markov-chain samplers-the Gibbs sampler, which cycles through coordinate directions; the Hit-and-Run (H&R) sam-pler, which randomly moves in any direction; and the Metropolis sampler, which moves with a probability that is a ratio of likelihoods. We obtain several analytical results. We provide a sufficient condition of the geometric convergence on a bounded region S for the H&R sampler. For a general region S, we review the Schervish and Carlin sufficient geometric convergence condition for the Gibbs sampler. We show that for a multivari-ate normal distribution this Gibbs sufficient condition holds and for a bivariate normal distribution the Gibbs marginal sample paths are each an AR(1) process, and we obtain the standard errors of sample means and sample variances, which we later use to verify empirical Monte Carlo results. We empirically compare the Gibbs and H&R samplers on bivariate normal examples. For zero correlation, the Gibbs sampler provides independent data, resulting in better performance than H&R. As the absolute value of the correlation increases, H&R performance improves, with H&R substantially better for correlations above .9. We also suggest and study methods for choosing the number of replications, for estimating the standard error of point estimators and for reducing point-estimator variance. We suggest using a single long run instead of using multiple iid separate runs. We suggest using overlapping batch statistics (obs) to get the standard errors of estimates; additional empirical results show that obs is accurate. Finally, we review the geometric convergence of the Metropolis algorithm and develop a Metropolisized H&R sampler. This sampler works well for high-dimensional and complicated integrands or Bayesian posterior densities.",
+		"note": "container-title: Journal of Computational and Graphical Statistics\nvolume: 2\nissue: 3\nISBN: 202117:37:20",
+		"page": "251-272",
+		"title": "Performance of the Gibbs, Hit-and-Run, and Metropolis Samplers",
+		"author": [
+			{
+				"family": "Chen",
+				"given": "Ming-Hui"
+			},
+			{
+				"family": "Schmeiser",
+				"given": "Bruce"
+			},
+			{
+				"family": "Schmeisert",
+				"given": "Bruce"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1993"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/WISIAA3C",
+		"type": "report",
+		"abstract": "We elaborate on the Hit-and-Run sampler, a Monte Carlo approach that estimates the value of a high-dimensional integral with integrand h(x)f(_x) by sampling from a time-reversible Markov chain over the support of the density f. The Markov chain transitions are defined by choosing a random direction and then moving to a new point x whose likelihood depends on f in that direction. The serially dependent observations of h(xi) are averaged to estimate the integral. The sampler applies directly to f being a nonnegative function with finite integral. We generalize the convergence results of Belisle et al. [3] to unbounded regions and to unbounded integrands. Here convergence is of the point estimator to the value of the integral; this convergence is based on convergence in distribution of realizations to their limiting distribution f An important application is determining properties of Bayesan posterior distributions. Here fis proportional to the posterior density and h is chosen to indicate the property being estimated. Typical properties include means, variances, correlations, probabilities of regions, and predictive densities.",
+		"note": "container-title: Operations Research Letters\nvolume: 19",
+		"page": "161-169",
+		"title": "General Hit-and-Run Monte Carlo sampling for evaluating multidimensional integrals 1",
+		"author": [
+			{
+				"family": "Chen",
+				"given": "Ming-Hui"
+			},
+			{
+				"family": "Schmeiser B'",
+				"given": "Bruce W"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1996"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/INQRFWTY",
+		"type": "book",
+		"abstract": "Markov Chain Monte Carlo (MCMC) methods are now an indispensable tool in scientific computing. This book discusses recent developments of MCMC methods with an emphasis on those making use of past sample information during simulations. The application examples are drawn from diverse fields such as bioinformatics, machine learning, social science, combinatorial optimization, and computational physics. Key Features:Expanded coverage of the stochastic approximation Monte Carlo and dynamic weighting algorithms that are essentially immune to local trap problems. A detailed discussion of the Monte Carl. Front Matter -- Bayesian Inference and Markov Chain Monte Carlo -- The Gibbs Sampler -- The Metropolis-Hastings Algorithm -- Auxiliary Variable MCMC Methods -- Population-Based MCMC Methods -- Dynamic Weighting -- Stochastic Approximation Monte Carlo -- Markov Chain Monte Carlo with Adaptive Proposals -- References -- Index.",
+		"ISBN": "978-0-470-74826-8",
+		"publisher": "Wiley",
+		"title": "Advanced Markov chain Monte Carlo methods : learning from past samples",
+		"author": [
+			{
+				"family": "Liang",
+				"given": "F. (Faming)"
+			},
+			{
+				"family": "Liu",
+				"given": "Chuanhai"
+			},
+			{
+				"family": "Carroll",
+				"given": "Raymond J."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2010"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/QGFX54CQ",
+		"type": "report",
+		"title": "Measuring the incentive to collude: The vitamin cartels, 1990-1999",
+		"author": [
+			{
+				"family": "Igami",
+				"given": "Mitsuru"
+			},
+			{
+				"family": "Sugaya",
+				"given": "Takuo"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/LLC5IBYH",
+		"type": "report",
+		"note": "volume: 52\nissue: 3",
+		"page": "579-597",
+		"title": "The Nonparametric Approach to Production Analysis",
+		"author": [
+			{
+				"family": "Varian",
+				"given": "Hal R"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1984"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/QIKVCEQY",
+		"type": "article-journal",
+		"abstract": "Recently, increasing research attention has been paid to studying and modelling the efficiency behaviour of multidivisional firms. In this paper, we propose a simple and intuitive nonparametric approach for cost minimising in multidivisional firms when resources can be reallocated across firms and/or divisions. In particular, we consider that resource reallocation occurs through the price system. One distinguishing feature of our approach is that no price information is required to evaluate cost efficiency. This feature clearly increases the practical usefulness of our methodology given that prices are generally unknown when resource reallocation is possible. We consider various extensions of our framework, present a simulation, and apply our methodology to the Chinese manufacturing sector using a firm-level dataset.",
+		"container-title": "International Journal of Production Economics",
+		"DOI": "10.1016/j.ijpe.2019.04.020",
+		"ISSN": "09255273",
+		"note": "publisher: Elsevier B.V.",
+		"page": "196-205",
+		"title": "Reallocation of resources in multidivisional firms: A nonparametric approach",
+		"volume": "214",
+		"author": [
+			{
+				"family": "Walheer",
+				"given": "Barnabe"
+			},
+			{
+				"family": "Hudik",
+				"given": "Marek"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2019",
+					8,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/PKLFIK7N",
+		"type": "report",
+		"note": "volume: 50\nissue: 4",
+		"page": "945-973",
+		"title": "The Nonparametric Approach to Demand Analysis",
+		"author": [
+			{
+				"family": "Varian",
+				"given": "Hal R"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1982"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/7M7SKG2N",
+		"type": "article-journal",
+		"container-title": "International Economic Review",
+		"issue": "1",
+		"note": "ISBN: 202121:38:54",
+		"page": "67-77",
+		"title": "The Construction of Utility Functions from Expenditure Data",
+		"volume": "8",
+		"author": [
+			{
+				"family": "Afriat",
+				"given": "S. N."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1967",
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/S2K6FBQQ",
+		"type": "article-journal",
+		"abstract": "Industry  concentration  and  corporate  profit  rates  have  increased,  in  the  United  States,  overthe  past  two  decades.   This  paper  investigates  the  welfare  implications  of  economic  activityconcentrating within a few firms that hold market power.  I develop a general equilibrium modelthat features granular firms that compete in a network game of oligopoly, alongside a competitivefringe of atomistic firms with endogenous entry.  To capture the degree of product differentiationamong the oligopolists, I introduce a Generalized Hedonic-Linear (GHL) demand system.  I showhow  to  identify  this  demand  system  using  a  publicly-available  dataset  that  measures  productsimilarity among all public corporations in the US. Using my model, I estimate a large deadweightloss from oligopolistic behavior, equal to 11% of the total surplus produced by public firms.  Thisloss would increase to 20% if all these firms were allowed to collude.  The distributional effectsof oligopoly are quantitatively important as well:  under perfect competition, consumer surpluswould double with respect to the oligopolistic equilibrium.  I also estimate that the deadweightloss has increased by at least 2.5 percentage points since 1997.  The share of surplus that accruesto  producers  as  profits  also  has  increased.   Finally,  I  show  how  the  dramatic  rise  in  startups’proclivity to sell off to incumbents (rather than go public) may have contributed to these trends.",
+		"container-title": "Working Paper",
+		"title": "Product Differentiation and Oligopoly:a Network Approach",
+		"author": [
+			{
+				"family": "Pellegrino",
+				"given": "Bruno"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					7,
+					27
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/8GXHZAJC",
+		"type": "article-journal",
+		"abstract": "We study the welfare implications of the rise of common ownership and product market con-centration in the United States from 1994 to 2018.  We develop a general equilibrium model inwhich granular firms compete in a network game of oligopoly.  Firms are connected through twolarge networks:  the first reflects ownership overlap, the second product similarity.  In our model,common ownership of competing firms induces unilateral incentives to soften product marketcompetition.  A key insight of our model is that the product market effects of common ownershipdepend crucially on the extent to which these two networks overlap.  We estimate our modelfor the universe of public corporations in the U.S. using a combination of firm financials,  in-vestor holdings and text-based product similarity data.  We perform counterfactual calculationsto evaluate how the efficiency and the distributional impact of common ownership have evolvedover time.  Based on our model, the welfare cost of common ownership, measured as deadweightloss-to-total surplus ratio,  has increased nearly tenfold (from 0.3% to over 4%) between 1994and 2018.  The rise of common ownership has also resulted in a significant reallocation of surplusfrom consumers to producers.",
+		"container-title": "Working Paper",
+		"title": "A Tale of Two Networks:Common Ownership and Product Market Rivalry",
+		"author": [
+			{
+				"family": "Ederer",
+				"given": "Florian"
+			},
+			{
+				"family": "Pellegrino",
+				"given": "Bruno"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					10,
+					28
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/YTKJ2TXC",
+		"type": "report",
+		"abstract": "We study inference on firm conduct without data on markups. Berry and Haile (2014) provide a testability condition requiring instruments. Implementing a test using this condition involves choosing both hypotheses and instruments, which affect inference. While the IO literature has adopted model selection and model assessment approaches to formulating hypotheses, we present the advantages of the Rivers and Vuong (2002) (RV) model selection test under misspecification. However, the RV test may suffer from degeneracy, whereby inference is invalid. We characterize degeneracy as a weak instruments problem via a novel definition of weak instruments for testing. This characterization enables us to provide a diagnostic for reliable inference. We illustrate our results in the setting of Villas-Boas (2007). We test conduct with three standard sets of instruments, one strong and two weak. Weak instruments cause the RV test to have no power. With strong instruments, models of double marginalization are rejected.",
+		"title": "Testing Firm Conduct",
+		"author": [
+			{
+				"family": "Duarte",
+				"given": "Marco"
+			},
+			{
+				"family": "Magnolfi",
+				"given": "Lorenzo"
+			},
+			{
+				"family": "Sølvsten",
+				"given": "Mikkel"
+			},
+			{
+				"family": "Sullivan",
+				"given": "Christopher"
+			},
+			{
+				"family": "Berry",
+				"given": "Steve"
+			},
+			{
+				"family": "Houde",
+				"given": "J F"
+			},
+			{
+				"family": "Johnston",
+				"given": "Sarah"
+			},
+			{
+				"family": "Sorensen",
+				"given": "Alan"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/5WU5M7BA",
+		"type": "article-journal",
+		"abstract": "We present new identification results for nonparametric models of differentiated products markets, using only market level observables. We specify a nonparametric random utility discrete choice model of demand allowing rich preference heterogene-ity, product/market unobservables, and endogenous prices. Our supply model posits nonparametric cost functions, allows latent cost shocks, and nests a range of standard oligopoly models. We consider identification of demand, identification of changes in aggregate consumer welfare, identification of marginal costs, identification of firms' marginal cost functions, and discrimination between alternative models of firm con-duct. We explore two complementary approaches. The first demonstrates identification under the same nonparametric instrumental variables conditions required for identi-fication of regression models. The second treats demand and supply in a system of nonparametric simultaneous equations, leading to constructive proofs exploiting ex-ogenous variation in demand shifters and cost shifters. We also derive testable restric-tions that provide the first general formalization of Bresnahan's (1982) intuition for empirically distinguishing between alternative models of oligopoly competition. From a practical perspective, our results clarify the types of instrumental variables needed with market level data, including tradeoffs between functional form and exclusion re-strictions.",
+		"container-title": "Econometrica",
+		"DOI": "10.3982/ECTA9027",
+		"ISSN": "0012-9682",
+		"issue": "5",
+		"note": "publisher: The Econometric Society",
+		"page": "1749-1797",
+		"title": "Identification in Differentiated Products Markets Using Market Level Data",
+		"volume": "82",
+		"author": [
+			{
+				"family": "Berry",
+				"given": "Steven"
+			},
+			{
+				"family": "Haile",
+				"given": "Philip"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					28
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2014"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/R4JCL4FV",
+		"type": "article-journal",
+		"abstract": "This paper studies nonparametric identification and counter-factual bounds for heterogeneous firms that can be ranked in terms of productivity. Our approach works when quantities and prices are latent rendering standard approaches inapplicable. Instead, we require observation of profits or other optimizing-values such as costs or revenues, and either prices or price proxies of flexibly chosen variables. We extend classical duality results for price-taking firms to a setup with discrete heterogeneity, endogeneity, and limited variation in possibly latent prices. Finally, we show that convergence results for nonparametric estimators may be directly converted to convergence results for production sets. JEL classification: C5, D24.",
+		"note": "arXiv: 1810.04697v3",
+		"title": "Prices, Profits, Proxies, and Production *",
+		"author": [
+			{
+				"family": "Aguiar",
+				"given": "Victor H"
+			},
+			{
+				"family": "Allen",
+				"given": "Roy"
+			},
+			{
+				"family": "Kashaev",
+				"given": "Nail"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					28
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/SZF43735",
+		"type": "article-journal",
+		"abstract": "Standard discrete choice models used to evaluate mergers assume that dierent product varieties are substitutes. However, legal defences in some recent high-prole mergers rested on demand com-plementarity (e.g., GE/Honeywell). Since complements tend to be priced lower by a monopolist than by a duopoly, standard models will overstate consumer harm in these mergers. We use consumer level data from Nielsen to look at two products with natural demand complementarities and a history of regulatory activity-potato chips and carbonated soda pop. We estimate a discrete choice model that allows for demand complementarity across pop and chips, using a novel estimator that leverages information on bundle specic purchases from consumer micro data, as well as aggregate scanner data. We then simulate a number of antitrust counterfactuals in the chips and carbonated soda market. Once demand complementarity is taken into account, a merger between the chips and soda producer PepsiCo/Frito-Lay and the soda producer Dr. Pepper will reduce chip prices. Soda prices will either increase or fall, depending on the market. By contrast, the standard discrete choice model predicts that soda prices would always increase following the merger. An additional counterfactual breaking up the PepsiCo/Frito-Lay conglomerate suggests that both chip and soda prices will increase as a result. * We would like to thank Victor Aguirregabiria, Avi Goldfarb, Heski Bar-Isaac and Michelle Sovinsky for their helpful comments on this project. This paper also beneted from discussions with Mario Samano and seminar participants at the University of Toronto, the 12th Annual CRESSE conference, and the 2017 EARIE conference.",
+		"title": "Mergers in a Model with Complementarity",
+		"URL": "https://ssrn.com/abstract=3295232",
+		"author": [
+			{
+				"family": "Ershov",
+				"given": "Daniel"
+			},
+			{
+				"family": "Laliberté",
+				"given": "Jean-William"
+			},
+			{
+				"family": "Orr",
+				"given": "Scott"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					2
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/NA33Z899",
+		"type": "article-journal",
+		"abstract": "We show that variation in a single, generic tax rate can be used to identify and estimate single-good structural models that include general demand and supply specifications and (potential) market power. Our results generalize those of Zoutman et al. (2018a), who consider using a single ad valorem tax rate to identify and estimate constant-elasticity demand and supply functions under perfect competition. We also consider identification and estimation in multiple-good settings, including cases where the number of goods exceeds the number of independently-shifting tax rates. Estimation is straightforward and can be performed via two sequential GMM estimates.",
+		"container-title": "Journal of Public Economics",
+		"DOI": "10.1016/J.JPUBECO.2021.104561",
+		"ISSN": "0047-2727",
+		"note": "publisher: North-Holland",
+		"page": "104561",
+		"title": "Estimating structural demand and supply models using tax rates as instruments",
+		"volume": "205",
+		"author": [
+			{
+				"family": "Dearing",
+				"given": "Adam"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					7
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/7I44PQX2",
+		"type": "webpage",
+		"title": "[PDF] DETERMINISTIC NONPARAMETRIC MARKET POWER TESTS: AN EMPIRICAL INVESTIGATION | Semantic Scholar",
+		"URL": "https://www.semanticscholar.org/paper/DETERMINISTIC-NONPARAMETRIC-MARKET-POWER-TESTS%3A-AN-Raper-Noelke/4b772892a27dd1e987c5ca27dc573bb30b60e929",
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					7
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/EDCAM5SF",
+		"type": "article-journal",
+		"abstract": "In this paper the revealed preference approach is used to construct a non- parametric test of the monopoly model and some simple generalizations of it, and the test is applied to data for the cigarette industry. The test exploits the maintained hypothesis that variations in the excise tax charged on a package of cigarettes allow us to assess seller reactions to common exogenous variations in product marginal cost. These easily implemented nonparametric tests indicate that the monopoly hypothesis and other simple models that do not embody at least a moderate amount of competition serve as poor predictors of the effects of excise tax changes on cigarette prices, sales, and revenues. We also find some evidence that excise tax increases do not consistently act to increase prices and decrease sales, which calls into question many other hypotheses about firm behavior in the industry. ELEMENTARY",
+		"container-title": "The Journal of Industrial Economics",
+		"DOI": "10.2307/2098584",
+		"ISSN": "00221821",
+		"issue": "4",
+		"note": "publisher: JSTOR",
+		"page": "483",
+		"title": "Nonparametric Tests of Market Structure: An Application to the Cigarette Industry",
+		"volume": "35",
+		"author": [
+			{
+				"family": "Ashenfelter",
+				"given": "Orley"
+			},
+			{
+				"family": "Sullivan",
+				"given": "Daniel"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					7
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1987",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/HKYGHU2Y",
+		"type": "article-journal",
+		"container-title": "American Journal of Agricultural Economics",
+		"DOI": "10.2307/1243409",
+		"ISSN": "0002-9092",
+		"issue": "5",
+		"note": "publisher: Wiley",
+		"page": "1156-1162",
+		"title": "Nonparametric Tests for Monopsonistic Market Power Exertion",
+		"volume": "76",
+		"author": [
+			{
+				"family": "Love",
+				"given": "H. Alan"
+			},
+			{
+				"family": "Shumway",
+				"given": "C. Richard"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					7
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1994",
+					12
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/HP7K63IW",
+		"type": "article-journal",
+		"abstract": "In this paper, I use a non-parametric revealed preference approach to investigate the empirical content of an oligopoly, with a relative maximization setup wherein players have different cost functions to produce a homogeneous good. Moreover, I present an empirical application to the crude oil market and its main producers and compare the rejection rates of the standard Cournot, the perfect competition, and relative maximizing hypotheses. The results show that the relative maximization model better explains the behavior of the major oil producers than the best-reply and price-taking models.",
+		"container-title": "Economic Modelling",
+		"DOI": "10.1016/j.econmod.2021.105547",
+		"ISSN": "02649993",
+		"note": "publisher: Elsevier B.V.",
+		"title": "A nonparametric approach to evolutionary oligopoly games: An application to the crude oil industry",
+		"volume": "101",
+		"author": [
+			{
+				"family": "Moghadam",
+				"given": "Hamed Markazi"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					8,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/HN76FE6F",
+		"type": "article-journal",
+		"abstract": "This paper analyzes the optimal strategy of a monopoly facing stochastic and dynamic demand and choosing a Cournot-type strategy, more precisely, adjusting its output. This investigation is motivated by the decisions of OPEC to adjust its output and by the again high and volatile oil prices. The oil market characteristics - uncertainty, dynamic and convex demand, and a quantity adjusting cartel - provide in turn an explanation for two different kinds of volatility for oil prices, small and large. Moreover, it makes a difference in such a setting whether OPEC plays in prices (as it did up to 1985) or in quantities (its current policy) and the model implications are compatible with the observed pattern. The numerical example, even accounting for all necessary caveats, suggests that OPEC may not be a perfect cartel but even assuming that OPEC behaves like a duopoly would lead to much larger supplies.",
+		"container-title": "Economic Modelling",
+		"DOI": "10.1016/j.econmod.2014.10.021",
+		"ISSN": "02649993",
+		"note": "publisher: Elsevier B.V.",
+		"page": "307-316",
+		"title": "Output adjusting cartels facing dynamic, convex demand under uncertainty: The case of OPEC",
+		"volume": "44",
+		"author": [
+			{
+				"family": "Wirl",
+				"given": "Franz"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2015",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/UWN79D8E",
+		"type": "report",
+		"note": "container-title: Economics Letters\nvolume: 10",
+		"title": "THE OLIGOPOLY SOLUTION CONCEPT IS IDENTIFIED *",
+		"author": [
+			{
+				"family": "Bresnahan",
+				"given": "Timothy F"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1982"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/HVQD36S9",
+		"type": "report",
+		"abstract": "Using data on shopping expenditures from the Nielsen Homescan Dataset, I document that low-income consumers pay lower prices than high-income consumers and that both income groups have comparable distributions of food consumption levels. I investigate whether these facts are explained by heterogeneity in price search. I propose a model where consumers can pay lower prices by shopping more frequently. The impacts of shopping frequency on prices paid depend on the consumer shopping technology. I develop a revealed preference methodology to set identify the shopping technology in a computationally tractable fashion. My approach allows for nonparametric concave preferences, rich heterogeneity, and measurement error in prices. I show that the data are consistent with the model and that a doubling of shopping frequency decreases prices paid by about 19%. Additionally, I show that heterogeneity in price search mitigates between-group consumption inequality by almost 15% for a fraction of consumers and creates within-group consumption inequality by the same order of magnitude. My results show that price search is important for understanding consumption inequality but that the gap in prices paid between income groups is due to other factors such as good quality.",
+		"title": "Price Search and Consumption Inequality: Robust, Credible, and Valid Inference *",
+		"author": [
+			{
+				"family": "Gauthier",
+				"given": "Charles"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					5,
+					6
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/PDILWQ9A",
+		"type": "article-journal",
+		"abstract": "In this paper, I use a non-parametric revealed preference approach to investigate the empirical content of an oligopoly, with a relative maximization setup wherein players have different cost functions to produce a homogeneous good. Moreover, I present an empirical application to the crude oil market and its main producers and compare the rejection rates of the standard Cournot, the perfect competition, and relative maximizing hypotheses. The results show that the relative maximization model better explains the behavior of the major oil producers than the best-reply and price-taking models.",
+		"container-title": "Economic Modelling",
+		"DOI": "10.1016/j.econmod.2021.105547",
+		"ISSN": "02649993",
+		"note": "publisher: Elsevier B.V.",
+		"title": "A nonparametric approach to evolutionary oligopoly games: An application to the crude oil industry",
+		"volume": "101",
+		"author": [
+			{
+				"family": "Moghadam",
+				"given": "Hamed Markazi"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					8,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5868710/items/HGQR48PU",
+		"type": "article-journal",
+		"abstract": "In a simplified theoretical framework, we model the strategic interactions between OPEC and non-OPEC producers and the implications for the global oil market. Depending on market conditions, OPEC may find it optimal to act either as a monopolist on the residual demand curve, to move supply in-tandem with non-OPEC, or to offset changes in non-OPEC supply. We evaluate the implications of the model through a Structural Vector Auto Regression (VAR) that separates non-OPEC and OPEC production and allows OPEC to respond to supply increases in non-OPEC countries. This is done by either increasing production (Market Share Targeting) or by reducing it (Price Targeting). We find that Price Targeting shocks absorb half of the fluctuations in oil prices, which have left unexplained by a simpler model (where strategic interactions are not taken into account). Price Targeting shocks, ignored by previous studies, explain around 10 percent of oil price fluctuations and are particularly relevant in the commodity price boom of the 2000s. We confirm that the fall in oil prices at the end of 2014 was triggered by an attempt of OPEC to re-gain market shares. We also find the OPEC elasticity of supply three times as high as that of non-OPEC producers.",
+		"container-title": "Energy Economics",
+		"DOI": "10.1016/j.eneco.2021.105739",
+		"ISSN": "01409883",
+		"note": "publisher: Elsevier B.V.",
+		"title": "Strategic interactions and price dynamics in the global oil market",
+		"volume": "107",
+		"author": [
+			{
+				"family": "Alonso-Alvarez",
+				"given": "Irma"
+			},
+			{
+				"family": "Di Nino",
+				"given": "Virginia"
+			},
+			{
+				"family": "Venditti",
+				"given": "Fabrizio"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					1
+				]
+			]
+		}
+	}
+]
