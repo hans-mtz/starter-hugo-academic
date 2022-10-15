@@ -1,5 +1,5 @@
 ---
-bio: Economics PhD student at Western University
+bio: Economics PhD candidate at Western University
 education:
   courses:
   - course: Ph.D. in Economics
@@ -42,6 +42,6 @@ superuser: true
 title: Hans Martinez
 ---
 
-Hans Martinez is a Ph.D. student at Western University. His research interests span Industrial Organization, Econometrics of Unobservables and Measurement Error, Applied Microeconomics, and the intersection between Causal Inference and Machine Learning. Raised in single-parent home in northern Mexico, he is a first-generation doctoral student. 
+Hans Martinez is a Ph.D. candidate at Western University. His research interests span Industrial Organization, Econometrics of Unobservables and Measurement Error, Applied Microeconomics, and the intersection between Causal Inference and Machine Learning. Raised in single-parent home in northern Mexico, he is a first-generation doctoral student. 
 
-{{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/HansCV.pdf" "newtab" >}}resumé{{< /staticref >}}.
+{{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/HansCV.pdf" "newtab" >}}resumé.{{< /staticref >}}

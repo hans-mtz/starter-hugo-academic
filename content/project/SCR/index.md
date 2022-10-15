@@ -1,5 +1,14 @@
 ---
+draft: false
+title: Cournot Rationalizability and Measurement Error
+summary: Do the observed prices and quantities in the international oil industry arise as an equilibrium of the Cournot model when quantities are mismeasured?
+authors: [admin]
 date: "2022-05-14"
+tags:
+  - Firm Conduct
+  - Cournot Competition
+  - Oil Industry
+  - Measurement Error
 external_link: ""
 image:
   caption: Figure by Hans M.
@@ -9,20 +18,16 @@ links:
   icon_pack: fab
   name: Follow
   url: https://twitter.com/Hans_Mtz
-slides: 
-summary: Do the observed prices and quantities in the international oil industry arise as an equilibrium of the Cournot model when quantities are mismeasured?
-tags:
-- Firm Conduct
-- Cournot Competition
-- Oil Industry
-- Measurement Error
-title: Cournot Rationalizability and Measurement Error
+slides: ""
 url_code: ""
 url_pdf: ""
 url_slides: https://raw.githack.com/hans-mtz/Slides/main/Gen/SP_05-2022.html
 url_video: ""
 share: false
 # bibFile: content/project/SCR/bib.json
+# _build:
+#   render: always
+#   list: always # Only share with few. Prevents from listing in page collections
 
 ---
 

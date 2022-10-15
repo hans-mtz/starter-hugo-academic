@@ -1,0 +1,37 @@
+# Theme metadata
+name = "MyTheme"
+
+[light]
+  # Primary
+  primary = "#4F2683" # "#1565c0" #Blue in the back
+  
+  link = "#4F2683" # "#bbdefb"
+  link_hover = "#4F2683" # "#bbdefb"
+
+  # Menu
+  menu_primary = "#fff" #White
+  menu_text = "#807F83" # "#34495e"
+  menu_text_active = "#4F2683" # "#2962ff"
+  menu_title = "#4F2683" # "#2b2b2b"
+
+  # Home sections
+  home_section_odd = "rgb(255, 255, 255)"
+  home_section_even = "rgb(247, 247, 247)"
+
+[dark]
+  # Primary
+  primary = "#807F83" # "#bbdefb"
+  secondary = "#1E0E31"
+
+  link = "#26837D" # "#bbdefb"
+  link_hover = "#26837D" # "#bbdefb"
+  
+  # Menu
+  menu_primary = "#1E0E31" # "#fff" #White
+  menu_text = "#fff" # "#807F83" # "#34495e"
+  menu_text_active = "#26837D" # "#2962ff"
+  menu_title = "#fff" # "#807F83" # "#2b2b2b"
+  
+  # Home sections
+  home_section_odd = "#1E0E31" # "rgb(30, 14, 49)"
+  home_section_even = "#281342" # rgb(22, 6, 41)"
