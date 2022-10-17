@@ -30,7 +30,7 @@ links:
 
 url_code: ""
 url_pdf: ""
-url_slides: "https://raw.githack.com/hans-mtz/Slides/main/Gen/NK2022.html"
+url_slides: "https://raw.githack.com/hans-mtz/Slides/main/Slides/prospectus-HM.html"
 url_video: ""
 
 share: false
@@ -50,7 +50,7 @@ Tax evasion is a significant concern for developing and developed countries. Des
 
 ## Introduction
 
-Tax evasion is a significant concern for developing and developed countries[^wide]. Despite the vast efforts of the literature, measuring tax evasion remains a non-trivial task[^measure]. Direct empirical measures are mostly unreliable because firms and individuals have incentives to conceal their behavior [@Slemrod2019]. Hence, it is unlikely that evasion would be truthfully reported in surveys, for instance. Indirect structural measures have had some degree of success in the case of individual income tax evasion [@Pissarides1989], but in the case of corporate tax evasion researchers must account for an additional unobserved variable, the productivity of firms. Having productivity estimates could potentially help, however, tax evasion has not been satisfactorily addressed in the estimation of productivity. I show that ignoring tax evasion leads to biased estimates of productivity. To address this gap in the literature, I provide a new estimation strategy to recover tax evasion and productivity using commonly available data. 
+Tax evasion is a significant concern for developing and developed countries[^wide]. Despite the vast efforts of the literature, measuring tax evasion remains a non-trivial task[^measure]. Direct empirical measures are mostly unreliable because firms and individuals have incentives to conceal their behavior {{< hugo-cite/hcite "Slemrod2019" >}}. Hence, it is unlikely that evasion would be truthfully reported in surveys, for instance. Indirect structural measures have had some degree of success in the case of individual income tax evasion {{< hugo-cite/hcite "Pissarides1989" >}}, but in the case of corporate tax evasion researchers must account for an additional unobserved variable, the productivity of firms. Having productivity estimates could potentially help, however, tax evasion has not been satisfactorily addressed in the estimation of productivity. I show that ignoring tax evasion leads to biased estimates of productivity. To address this gap in the literature, I provide a new estimation strategy to recover tax evasion and productivity using commonly available data. 
 
 [^wide]: Tax evasion has been a long-standing concern for developing countries, but since the 2008 economic crisis, it has also been of increasing importance for developed countries {{< hugo-cite/hcite "Slemrod2019" >}}. 
 
