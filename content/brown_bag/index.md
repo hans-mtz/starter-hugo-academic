@@ -44,22 +44,10 @@ Currently, the seminar is open to only Western students, but it is likely to be 
    <td style="text-align:left;"> Applied IO </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 2023-03-16 </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:left;"> GO SEE ELIE TAMER </td>
-   <td style="text-align:left;"> NA </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> 2023-03-23 </td>
    <td style="text-align:left;"> Yoshiki Nakajima </td>
    <td style="text-align:left;"> Delegation Rules with Indecisive Individuals </td>
    <td style="text-align:left;"> Theory </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 2023-03-30 </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:left;"> GO SEE ARIEL PAKES </td>
-   <td style="text-align:left;"> NA </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2023-04-06 </td>

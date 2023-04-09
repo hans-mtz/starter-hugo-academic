@@ -9,13 +9,13 @@ format: hugo-md
 
 ## Introduction 
 
-Hans Martinez, Evan Sauve, and Tyler Skura started the Brown Bag Student Seminar at the Economics Department of Western University during the 2023 winter term. The seminar provides a forum for Ph.D. students of any year to present research in progress or research ideas in an informal and casual environment. Students receive feedback and suggestions to improve their work.
+Evan Sauve, Tyler Skura, and I started the Brown Bag Student Seminar at the Economics Department of Western University during the 2023 winter term. The seminar provides a forum for Ph.D. students of any year to present research in progress or research ideas in an informal and casual environment. Students receive feedback and suggestions to improve their work.
 
 ## Format and objectives
 
-The seminar consists of short presentations 20-30 minutes long, followed by 10-15 min of questions and feedback. The meetings have place every Thursday from 12-1 p.m.
+The seminar consists of short presentations 20-30 minutes long, followed by 10-15 min of questions and feedback. The meetings are held every Thursday from 12-1 p.m.
  
-The seminar prioritizes providing content feedback on original work in progress or early research ideas and a safe environment to present new ideas and ask naïve questions.
+The seminar prioritizes providing content feedback on original work in progress or early research ideas. It provides a safe environment for students to present new ideas.
 
 ## Additional info
 
@@ -28,10 +28,14 @@ Currently, the seminar is open to only Western students, but it is likely to be 
 #| cache: TRUE
 #| tbl-cap: Brown Bag Student Seminar Schedule
 
+library(tidyverse)
+
 googlesheets4::gs4_deauth()
 schedule<- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/11NRu0Gt1XQ3pPsS6r5TzyHFtSaxBTAjQHQ2Y8JxeN3I/edit?usp=sharing", sheet= "Winter 2023", range = "A1:D11")
 
-kableExtra::kable(schedule)
+schedule %>%
+    filter(!is.na(Name)) %>%
+    kableExtra::kable()
 
 ```
 

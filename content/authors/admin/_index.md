@@ -12,13 +12,14 @@ education:
 email: "hmarti33@uwo.ca"
 highlight_name: true
 interests:
-- Industrial Organization
 - Applied Microeconomics
-- Machine Learning and Causal Inference
+- Industrial Organization
+- Productivity
+- Market Power
 organizations:
 - name: Western University
   url: https://economics.uwo.ca
-role: Applied Economist and Data Scientist
+role: Applied Economist
 social:
 - icon: envelope
   icon_pack: fas
@@ -42,6 +43,10 @@ superuser: true
 title: Hans Martinez
 ---
 
-Hans Martinez is a Ph.D. candidate at Western University. His research interests span Industrial Organization, Econometrics of Unobservables and Measurement Error, Applied Microeconomics, and the intersection between Causal Inference and Machine Learning. Raised in single-parent home in northern Mexico, he is a first-generation doctoral student. 
+I'm a Ph.D. candidate at Western University. I'm an Applied Economist interested in Industrial Organization broadly. I’m also interested in the intersections between IO and Labor and International Trade. My research combines economic theory and novel methods to develop original identification strategies.
 
-{{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/HansCV.pdf" "newtab" >}}resumé.{{< /staticref >}}
+Being raised in a single-parent home in northern Mexico, I'm proudly a first-generation doctoral student.
+
+Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html)
+
+<!-- {{< staticref "uploads/HansCV.pdf" "newtab" >}}resumé.{{< /staticref >}} -->

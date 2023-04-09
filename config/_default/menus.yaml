@@ -14,9 +14,9 @@ main:
     url: /teaching/
     weight: 30
   - name: CV
-    url: uploads/HansCV.pdf
+    url: https://raw.githack.com/hans-mtz/DataCV/master/cv.html
     weight: 40
-  - name: UWO - Brown Bag Student Seminar
+  - name: Brown Bag Student Seminar
     url: /brown_bag/
     weight: 50
   - name: Contact
