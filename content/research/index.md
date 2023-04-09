@@ -7,5 +7,3 @@ title: Research
 type: widget_page
 summary: Here you can find my latest projects
 ---
- 
- Something

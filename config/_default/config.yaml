@@ -38,7 +38,7 @@ paginate: 10
 enableEmoji: true
 enableRobotsTXT: true
 footnotereturnlinkcontents: <sup>^</sup>
-ignoreFiles: [\.ipynb$, .ipynb_checkpoints$, \.Rmd$, \.Rmarkdown$, _cache$]
+ignoreFiles: [\.qmd$, \.ipynb$, .ipynb_checkpoints$, \.Rmd$, \.Rmarkdown$, _cache$]
 permalinks:
   event: '/talk/:slug/'
   tags: '/tag/:slug/'
@@ -73,3 +73,8 @@ security:
   _merge: deep
 sitemap:
   _merge: deep
+
+## Quarto
+
+markup.goldmark.renderer:
+  unsafe: true

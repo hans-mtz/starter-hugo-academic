@@ -16,8 +16,8 @@ main:
   - name: CV
     url: uploads/HansCV.pdf
     weight: 40
-  - name: PhD Life
-    url: /post/
+  - name: UWO - Brown Bag Student Seminar
+    url: /brown_bag/
     weight: 50
   - name: Contact
     url: /contact/
