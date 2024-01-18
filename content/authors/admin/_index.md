@@ -12,10 +12,10 @@ education:
 email: "hmarti33@uwo.ca"
 highlight_name: true
 interests:
-- Applied Microeconomics
 - Industrial Organization
 - Productivity
 - Market Power
+- Applied Microeconomics
 organizations:
 - name: Western University
   url: https://economics.uwo.ca
@@ -43,9 +43,9 @@ superuser: true
 title: Hans Martinez
 ---
 
-I'm a Ph.D. candidate at Western University. I'm an Applied Economist interested in Industrial Organization broadly. I’m also interested in the intersections between IO and Labor and International Trade. My research combines economic theory and novel methods to develop original identification strategies.
+I'm an Applied Economist interested in Industrial Organization. My research combines economic theory and novel empirical methods to develop original identification strategies.
 
-Being raised in a single-parent home in northern Mexico, I'm proudly a first-generation doctoral student.
+Being raised in a single-parent home in northern Mexico, I'm proudly a first-generation doctoral candidate at Western University.
 
 Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html)
 
