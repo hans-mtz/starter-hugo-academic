@@ -16,3 +16,7 @@ I enjoy teaching. It's a rewarding experience. These are some of the courses I h
 - TA: Principles of Macroeconomics, UWO, Winter 2023, 2022, 2021, 2020
 - TA: Principles of Microeconomics, UWO, Fall 2022, 2021, 2020, 2019
 - Mathematics for Economists, UANL, Winter 2018
+
+## Resources
+
+- Quarto `western-exams` format and template to create different versions of MCQ exams: [{{< icon name="github" pack="fab" >}} GitHub repo](https://github.com/hans-mtz/western-exams/tree/main)
