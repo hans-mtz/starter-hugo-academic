@@ -43,9 +43,7 @@ superuser: true
 title: Hans Martinez
 ---
 
-I'm an Applied Economist interested in Industrial Organization. My research combines economic theory and novel empirical methods to develop original identification strategies.
-
-Being raised in a single-parent home in northern Mexico, I'm proudly a first-generation doctoral candidate at Western University.
+I'm an Applied Economist interested in Applied Industrial Organization, Public Policy, and Microeconomics. My research combines economic theory and novel empirical methods to develop original identification strategies.
 
 Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html)
 
