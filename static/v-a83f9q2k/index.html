@@ -252,7 +252,8 @@ function esc(s) {
 // open it in a normal browser, window.storage is gone, so we fall back to localStorage.
 const HAS_WIN_STORAGE = typeof window !== "undefined" && window.storage && typeof window.storage.get === "function";
 const SYNC_KEY = "ayuno-sync-url";
-let syncUrl = "";
+const DEFAULT_SYNC_URL = "/sync"; // proxy en tu propio dominio (Netlify function)
+let syncUrl = DEFAULT_SYNC_URL;
 let sheetSync = "idle"; // idle | pushing | ok | error
 
 async function storeList(key) {
@@ -284,8 +285,8 @@ async function tryLoad() {
     }
     try {
       const u = await storeGet(SYNC_KEY);
-      if (u && u.value) syncUrl = u.value;
-    } catch (e) {}
+      syncUrl = (u && u.value) ? u.value : DEFAULT_SYNC_URL;
+    } catch (e) { syncUrl = DEFAULT_SYNC_URL; }
     syncState = "synced";
     return true;
   } catch (e) {
@@ -335,35 +336,18 @@ function pushToSheet() {
 function pullFromSheet() {
   return new Promise((resolve, reject) => {
     if (!syncUrl) { reject(new Error("no url")); return; }
-    const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 12000);
-    fetch(syncUrl, { method: "GET", signal: ctrl.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
-      })
-      .then((data) => { clearTimeout(timeout); resolve(data); })
-      .catch((err) => { clearTimeout(timeout); reject(err); });
+    const cb = "jsonp_" + Date.now();
+    const sep = syncUrl.includes("?") ? "&" : "?";
+    const script = document.createElement("script");
+    let done = false;
+    const cleanup = () => { try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); };
+    window[cb] = (d) => { done = true; cleanup(); resolve(d); };
+    script.src = syncUrl + sep + "callback=" + cb;
+    script.onerror = () => { cleanup(); reject(new Error("fetch failed")); };
+    document.body.appendChild(script);
+    setTimeout(() => { if (!done) { cleanup(); reject(new Error("timeout")); } }, 12000);
   });
 }
-
-// Antigua implementación JSONP, que ya no se usa porque ahora la Web App de Sheets permite CORS y podemos hacer fetch directo.
-// Esto evita que la extracion de datos sea bloqueada por el navegador. 
-// function pullFromSheet() {
-//   return new Promise((resolve, reject) => {
-//     if (!syncUrl) { reject(new Error("no url")); return; }
-//     const cb = "jsonp_" + Date.now();
-//     const sep = syncUrl.includes("?") ? "&" : "?";
-//     const script = document.createElement("script");
-//     let done = false;
-//     const cleanup = () => { try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); };
-//     window[cb] = (d) => { done = true; cleanup(); resolve(d); };
-//     script.src = syncUrl + sep + "callback=" + cb;
-//     script.onerror = () => { cleanup(); reject(new Error("fetch failed")); };
-//     document.body.appendChild(script);
-//     setTimeout(() => { if (!done) { cleanup(); reject(new Error("timeout")); } }, 12000);
-//   });
-// }
 
 async function doPull() {
   if (!syncUrl) { toast("Primero guarda la URL de tu Web App"); return; }
@@ -390,17 +374,12 @@ async function doPull() {
 async function saveSyncUrl() {
   const el = document.getElementById("sync-url");
   const val = el ? el.value.trim() : "";
-  syncUrl = val;
-  try { await storeSet(SYNC_KEY, val); } catch (e) {}
-  if (val) {
-    // Al conectar, CONSOLIDA (trae y fusiona) en vez de empujar — así nunca
-    // pisamos la hoja con datos locales incompletos.
-    toast("URL guardada — consolidando…");
-    await doPull();
-  } else {
-    toast("Sincronización desactivada");
-    render();
-  }
+  syncUrl = val || DEFAULT_SYNC_URL; // vacío -> vuelve al proxy por defecto
+  try { await storeSet(SYNC_KEY, syncUrl); } catch (e) {}
+  // Al guardar, CONSOLIDA (trae y fusiona) en vez de empujar — así nunca
+  // pisamos la hoja con datos locales incompletos.
+  toast("Endpoint guardado — consolidando…");
+  await doPull();
 }
 
 function renderSyncStatus() {
@@ -715,19 +694,22 @@ function viewRegistro() {
 
 function syncCard() {
   const envNote = HAS_WIN_STORAGE
-    ? "⚠️ Estás dentro del artifact: la conexión directa a Sheets suele estar bloqueada aquí. Para probar la sincronización automática, descarga este HTML (botón de descarga) y ábrelo en tu navegador. El copiar/pegar de arriba sí funciona aquí."
-    : "✓ Ejecutándose fuera del artifact: la sincronización automática debería funcionar.";
+    ? "⚠️ Dentro del artifact la sincronización suele estar bloqueada. Descarga el HTML y ábrelo en tu página para usarla. El copiar/pegar de arriba sí funciona aquí."
+    : "Sincroniza con Google Sheets a través de tu propio dominio. Pulsa «Consolidar» al cambiar de dispositivo para traer lo nuevo del otro lado.";
+  const custom = syncUrl && syncUrl !== DEFAULT_SYNC_URL;
   return `<div class="card">
-    <div class="card-title">Sincronización automática con Google Sheets</div>
+    <div class="card-title">Sincronización con Google Sheets</div>
     <p class="helper">${envNote}</p>
-    <label>URL del Web App (de tu Apps Script, termina en /exec)</label>
-    <input type="text" id="sync-url" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(syncUrl)}"/>
-    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-      <button class="save" style="flex:1;margin-top:0" onclick="saveSyncUrl()">Guardar URL y consolidar</button>
-      <button class="act ghost" style="flex:1" onclick="doPull()">Consolidar ahora</button>
-    </div>
-    <p class="helper" style="margin:10px 0 0">La sincronización <b>fusiona</b> por id: junta lo de la app y lo de la hoja sin borrar nada. Pulsa «Consolidar» al cambiar de dispositivo para traer lo nuevo del otro lado.</p>
+    <button class="save" style="margin-top:0;width:100%" onclick="doPull()">Consolidar ahora</button>
+    <p class="helper" style="margin:10px 0 0">Fusiona por id: junta lo de la app y lo de la hoja sin borrar nada.</p>
     <div id="sync-status" class="sub2" style="margin-top:8px"></div>
+    <details style="margin-top:12px">
+      <summary style="cursor:pointer;color:var(--muted);font-size:12px">Avanzado: endpoint (${custom ? "personalizado" : "por defecto /sync"})</summary>
+      <label style="margin-top:8px">Endpoint de sincronización</label>
+      <input type="text" id="sync-url" placeholder="/sync" value="${esc(syncUrl)}"/>
+      <button class="act ghost" style="width:100%;margin-top:8px" onclick="saveSyncUrl()">Guardar endpoint</button>
+      <p class="helper" style="margin:8px 0 0">Por defecto es <b>/sync</b> (proxy en tu dominio). Solo cámbialo si sabes lo que haces.</p>
+    </details>
   </div>`;
 }
 function sectionCard(title, rows) {
