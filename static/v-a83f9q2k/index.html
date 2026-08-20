@@ -1,0 +1,886 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Ventana · ayuno intermitente</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #12141B;
+    --surface: #1A1E28;
+    --raised: #212636;
+    --border: #2B3040;
+    --text: #EDEEF2;
+    --muted: #8A8FA3;
+    --amber: #E8A33D;
+    --teal: #4FA8A0;
+    --rose: #D9694F;
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  input:focus, select:focus, button:focus-visible, textarea:focus {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+  }
+  ::selection { background: #E8A33D55; }
+
+  header { padding: 24px 20px 8px; }
+  .title-row { display: flex; align-items: center; gap: 8px; }
+  .flame { width: 22px; height: 22px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: 26px; margin: 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 13px; margin: 2px 0 0 30px; }
+
+  .banner {
+    margin: 10px 16px 0; padding: 9px 12px; border-radius: 10px;
+    font-size: 12px; line-height: 1.5;
+  }
+  .banner.offline { background: #D9694F1a; border: 1px solid #D9694F55; color: var(--rose); }
+  .banner.saved { background: #4FA8A01a; border: 1px solid #4FA8A055; color: var(--teal); }
+
+  nav.tabs {
+    display: flex; gap: 6px; padding: 12px 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  nav.tabs button {
+    flex: 1; padding: 10px 4px; background: transparent; border: none;
+    color: var(--muted); font-size: 13.5px; font-family: var(--body);
+    font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  nav.tabs button.active { color: var(--text); border-bottom: 2px solid var(--amber); }
+
+  main { padding: 18px 16px 0; }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px;
+  }
+  .card-title { font-family: var(--display); font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .helper { color: var(--muted); font-size: 12.5px; line-height: 1.5; margin: 0 0 12px; }
+  .empty { color: var(--muted); font-size: 13px; }
+
+  .clock-wrap { display: flex; justify-content: center; padding: 8px 0 0; }
+  .big-label { text-align: center; font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .pill {
+    display: inline-block; font-size: 11.5px; padding: 4px 10px;
+    border-radius: 20px; font-weight: 600; margin-top: 10px;
+  }
+
+  .actions { display: flex; gap: 8px; }
+  button.act {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 12px 8px; border-radius: 12px; font-weight: 600; font-size: 12.5px;
+    cursor: pointer; border: none; font-family: var(--body);
+  }
+  button.act.primary { background: var(--amber); color: #1A1408; }
+  button.act.ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
+
+  .list { display: flex; flex-direction: column; }
+  .row {
+    display: flex; align-items: center; gap: 10px; padding: 9px 2px;
+    border-bottom: 1px solid var(--border);
+  }
+  .row:last-child { border-bottom: none; }
+  .row .ico {
+    width: 26px; height: 26px; border-radius: 8px; background: var(--raised);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px;
+  }
+  .row .body { flex: 1; min-width: 0; }
+  .row .main { font-size: 13.5px; font-weight: 500; }
+  .row .sub2 { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .row .del {
+    background: transparent; border: none; color: var(--muted);
+    cursor: pointer; padding: 6px; font-size: 14px;
+  }
+
+  .form { display: flex; flex-direction: column; gap: 8px;
+    background: var(--raised); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px; }
+  .form-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .form-title { font-weight: 600; font-size: 14px; }
+  label { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  input, select, textarea {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; color: var(--text); font-size: 14px; font-family: var(--body); width: 100%;
+  }
+  button.save {
+    margin-top: 8px; background: var(--amber); color: #1A1408; border: none;
+    border-radius: 10px; padding: 11px 0; font-weight: 600; font-size: 13.5px;
+    cursor: pointer; font-family: var(--body);
+  }
+  button.save:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .export-row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  button.exp {
+    display: flex; align-items: center; gap: 6px; background: var(--surface);
+    border: 1px solid var(--border); color: var(--muted); border-radius: 10px;
+    padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: var(--body);
+  }
+  button.exp.sheets { color: var(--teal); border-color: #4FA8A055; }
+
+  .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  }
+  .modal {
+    background: var(--raised); border: 1px solid var(--border); border-radius: 16px;
+    padding: 18px; width: 100%; max-width: 440px; max-height: 82vh;
+    display: flex; flex-direction: column;
+  }
+  .modal textarea { flex: 1; min-height: 200px; font-family: monospace; font-size: 11.5px; resize: vertical; }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--raised); border: 1px solid var(--border); color: var(--text);
+    padding: 10px 18px; border-radius: 30px; font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 60;
+  }
+  .chart-box { position: relative; height: 220px; }
+  .icon-btn { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
+</style>
+
+<body>
+  <header>
+    <div class="title-row">
+      <svg class="flame" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+      <h1>Ventana</h1>
+    </div>
+    <p class="sub">seguimiento de ayuno intermitente</p>
+  </header>
+
+  <div id="banner"></div>
+
+  <nav class="tabs" id="tabs"></nav>
+  <main id="main"></main>
+  <div id="modal-root"></div>
+  <div id="toast-root"></div>
+
+<script>
+"use strict";
+
+// ---------- constants ----------
+const STORAGE_KEY = "ayuno-tracker-data";
+const TABS = [
+  { id: "hoy", label: "Hoy" },
+  { id: "registro", label: "Registro" },
+  { id: "graficas", label: "Gráficas" },
+  { id: "fases", label: "Fases" },
+];
+const PROTOCOL_OPTIONS = ["12:12", "16:8", "8:16", "OMAD", "24–48h", "Ayuno de agua"];
+const PROTOCOL_COLOR = {
+  "12:12": "#4FA8A0", "16:8": "#E8A33D", "8:16": "#D98A3D",
+  "OMAD": "#D9694F", "24–48h": "#B25B8F", "Ayuno de agua": "#5B7FD9",
+  "Ventana amplia": "#5A6272",
+};
+
+// ---------- state ----------
+let data = null;
+let activeTab = "hoy";
+let syncState = "connecting"; // connecting | synced | offline
+let canSave = false;
+let openForm = null; // 'meal' | 'measure' | 'ketone' | 'phase'
+let saveTimer = null;
+let charts = [];
+
+const emptyData = () => ({ meals: [], measurements: [], ketones: [], phases: [] });
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+
+// ---------- helpers ----------
+const hoursBetween = (a, b) => (new Date(b) - new Date(a)) / 36e5;
+
+function fmtDate(d) {
+  const dt = typeof d === "string" ? new Date(d) : d;
+  return dt.toLocaleDateString("es", { day: "2-digit", month: "short" });
+}
+function fmtDateTime(iso) {
+  return new Date(iso).toLocaleString("es", {
+    day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit",
+  });
+}
+function inferProtocol(h) {
+  if (h == null) return "—";
+  if (h < 12) return "Ventana amplia";
+  if (h < 15) return "12:12";
+  if (h < 19) return "16:8";
+  if (h < 23) return "8:16";
+  if (h < 30) return "OMAD";
+  if (h < 60) return "24–48h";
+  return "Ayuno de agua";
+}
+function currentFastHours() {
+  if (!data.meals.length) return null;
+  const last = [...data.meals].sort((a, b) => new Date(b.ts) - new Date(a.ts))[0];
+  return hoursBetween(last.ts, new Date());
+}
+function hoursFastedBefore(ts) {
+  const before = data.meals.filter((m) => new Date(m.ts) < new Date(ts));
+  if (!before.length) return null;
+  const last = before.sort((a, b) => new Date(b.ts) - new Date(a.ts))[0];
+  return hoursBetween(last.ts, ts);
+}
+function movingAverage(arr, key, w = 7) {
+  return arr.map((p, i) => {
+    const slice = arr.slice(Math.max(0, i - w + 1), i + 1).filter((x) => x[key] != null);
+    const avg = slice.length ? slice.reduce((s, x) => s + x[key], 0) / slice.length : null;
+    return { ...p, avg: avg != null ? +avg.toFixed(2) : null };
+  });
+}
+function nowLocalInputValue() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// ---------- storage abstraction (artifact window.storage OR localStorage) ----------
+// Inside the Claude artifact, window.storage exists. When you DOWNLOAD this file and
+// open it in a normal browser, window.storage is gone, so we fall back to localStorage.
+const HAS_WIN_STORAGE = typeof window !== "undefined" && window.storage && typeof window.storage.get === "function";
+const SYNC_KEY = "ayuno-sync-url";
+let syncUrl = "";
+let sheetSync = "idle"; // idle | pushing | ok | error
+
+async function storeList(key) {
+  if (HAS_WIN_STORAGE) return window.storage.list(key, false);
+  const v = localStorage.getItem(key);
+  return { keys: v != null ? [key] : [] };
+}
+async function storeGet(key) {
+  if (HAS_WIN_STORAGE) return window.storage.get(key, false);
+  const v = localStorage.getItem(key);
+  return v != null ? { value: v } : null;
+}
+async function storeSet(key, value) {
+  if (HAS_WIN_STORAGE) return window.storage.set(key, value, false);
+  localStorage.setItem(key, value);
+  return { value };
+}
+
+// ---------- persistence (load-first, guarded save) ----------
+async function tryLoad() {
+  try {
+    const listRes = await storeList(STORAGE_KEY);
+    const exists = !!(listRes && listRes.keys && listRes.keys.includes(STORAGE_KEY));
+    if (exists) {
+      const res = await storeGet(STORAGE_KEY);
+      data = res ? JSON.parse(res.value) : emptyData();
+    } else {
+      data = data || emptyData();
+    }
+    try {
+      const u = await storeGet(SYNC_KEY);
+      if (u && u.value) syncUrl = u.value;
+    } catch (e) {}
+    syncState = "synced";
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// ---------- Google Sheets sync ----------
+// Merge (union by id / by date) so neither source ever wipes the other.
+function mergeById(a, b) {
+  const map = new Map();
+  (a || []).forEach((x) => { if (x && x.id) map.set(x.id, x); });
+  (b || []).forEach((x) => { if (x && x.id) map.set(x.id, x); });
+  return Array.from(map.values());
+}
+function mergeByDate(a, b) {
+  const map = new Map();
+  (a || []).forEach((x) => { if (x && x.date) map.set(x.date, x); });
+  (b || []).forEach((x) => { if (x && x.date) map.set(x.date, x); });
+  return Array.from(map.values());
+}
+function mergeData(base, incoming) {
+  base = base || {}; incoming = incoming || {};
+  const merged = {
+    meals: mergeById(base.meals, incoming.meals),
+    measurements: mergeByDate(base.measurements, incoming.measurements),
+    ketones: mergeById(base.ketones, incoming.ketones),
+    phases: mergeById(base.phases, incoming.phases),
+  };
+  merged.measurements.sort((a, b) => new Date(a.date) - new Date(b.date));
+  merged.phases.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  return merged;
+}
+
+function pushToSheet() {
+  if (!syncUrl) return;
+  sheetSync = "pushing"; renderSyncStatus();
+  fetch(syncUrl, {
+    method: "POST",
+    mode: "no-cors", // fire-and-forget write; we can't read the response but the save happens
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(data),
+  }).then(() => { sheetSync = "ok"; renderSyncStatus(); })
+    .catch(() => { sheetSync = "error"; renderSyncStatus(); });
+}
+
+function pullFromSheet() {
+  return new Promise((resolve, reject) => {
+    if (!syncUrl) { reject(new Error("no url")); return; }
+    const cb = "jsonp_" + Date.now();
+    const sep = syncUrl.includes("?") ? "&" : "?";
+    const script = document.createElement("script");
+    let done = false;
+    const cleanup = () => { try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); };
+    window[cb] = (d) => { done = true; cleanup(); resolve(d); };
+    script.src = syncUrl + sep + "callback=" + cb;
+    script.onerror = () => { cleanup(); reject(new Error("fetch failed")); };
+    document.body.appendChild(script);
+    setTimeout(() => { if (!done) { cleanup(); reject(new Error("timeout")); } }, 12000);
+  });
+}
+
+async function doPull() {
+  if (!syncUrl) { toast("Primero guarda la URL de tu Web App"); return; }
+  toast("Consolidando con Google Sheets…");
+  try {
+    const remote = await pullFromSheet();
+    const remoteOk = remote && (Array.isArray(remote.meals) || Array.isArray(remote.measurements)
+      || Array.isArray(remote.ketones) || Array.isArray(remote.phases));
+    if (remoteOk) {
+      // Fusiona lo remoto con lo local: la unión de ambas fuentes, sin perder nada.
+      data = mergeData(data, remote);
+      scheduleSave();   // guarda local y reenvía la unión a la hoja (converge)
+      render();
+      const n = data.meals.length + data.measurements.length + data.ketones.length + data.phases.length;
+      toast(`Consolidado · ${n} registros en total`);
+    } else {
+      toast("La hoja está vacía o con formato inesperado");
+    }
+  } catch (e) {
+    toast("No se pudo traer (revisa la URL y que abras el archivo fuera del artifact)");
+  }
+}
+
+async function saveSyncUrl() {
+  const el = document.getElementById("sync-url");
+  const val = el ? el.value.trim() : "";
+  syncUrl = val;
+  try { await storeSet(SYNC_KEY, val); } catch (e) {}
+  if (val) {
+    // Al conectar, CONSOLIDA (trae y fusiona) en vez de empujar — así nunca
+    // pisamos la hoja con datos locales incompletos.
+    toast("URL guardada — consolidando…");
+    await doPull();
+  } else {
+    toast("Sincronización desactivada");
+    render();
+  }
+}
+
+function renderSyncStatus() {
+  const el = document.getElementById("sync-status");
+  if (!el) return;
+  const map = { idle: "", pushing: "sincronizando…", ok: "✓ enviado a Sheets", error: "✗ no se pudo enviar (¿fuera del artifact?)" };
+  el.textContent = map[sheetSync] || "";
+}
+
+async function boot() {
+  const ok = await tryLoad();
+  if (!ok) {
+    data = data || emptyData();
+    syncState = "offline";
+    const retry = async () => {
+      const success = await tryLoad();
+      if (!success) setTimeout(retry, 5000);
+      else { canSave = true; render(); }
+    };
+    setTimeout(retry, 3000);
+  }
+  canSave = true;
+  render();
+}
+
+function scheduleSave() {
+  if (!canSave) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await storeSet(STORAGE_KEY, JSON.stringify(data));
+      if (syncState === "offline") { syncState = "synced"; renderBanner(); }
+    } catch (e) {
+      syncState = "offline";
+      renderBanner();
+    }
+    if (syncUrl) pushToSheet();
+  }, 300);
+}
+
+// ---------- mutations ----------
+function commit(msg) { scheduleSave(); render(); if (msg) toast(msg); }
+
+function addMeal(ts, note) { data.meals.push({ id: uid(), ts, note }); openForm = null; commit("Comida registrada"); }
+function delMeal(id) { data.meals = data.meals.filter((m) => m.id !== id); commit(); }
+function addMeasurement(date, weight, waist) {
+  data.measurements = data.measurements.filter((m) => m.date !== date);
+  data.measurements.push({ id: uid(), date, weight, waist });
+  data.measurements.sort((a, b) => new Date(a.date) - new Date(b.date));
+  openForm = null; commit("Medición guardada");
+}
+function delMeasurement(id) { data.measurements = data.measurements.filter((m) => m.id !== id); commit(); }
+function addKetone(ts, value) { data.ketones.push({ id: uid(), ts, value }); openForm = null; commit("Cetonas registradas"); }
+function delKetone(id) { data.ketones = data.ketones.filter((k) => k.id !== id); commit(); }
+function addPhase(startDate, protocol, note) {
+  data.phases.push({ id: uid(), startDate, protocol, note });
+  data.phases.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  openForm = null; commit("Fase agregada");
+}
+function delPhase(id) { data.phases = data.phases.filter((p) => p.id !== id); commit(); }
+
+// ---------- export ----------
+function buildJSON() { return JSON.stringify(data, null, 2); }
+function buildRows() {
+  const rows = [["tipo", "fecha_hora", "valor1", "valor2", "nota"]];
+  data.meals.forEach((m) => rows.push(["comida", m.ts, "", "", m.note || ""]));
+  data.measurements.forEach((m) => rows.push(["medicion", m.date, m.weight ?? "", m.waist ?? "", ""]));
+  data.ketones.forEach((k) => rows.push(["cetonas", k.ts, k.value, "", ""]));
+  data.phases.forEach((p) => rows.push(["fase", p.startDate, p.protocol, "", p.note || ""]));
+  return rows;
+}
+function buildCSV() { return buildRows().map((r) => r.map((c) => `"${c}"`).join(",")).join("\n"); }
+function buildTSV() { return buildRows().map((r) => r.join("\t")).join("\n"); }
+
+function tryDownload(content, filename, mime) {
+  try {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+  } catch (e) { return false; }
+}
+
+let modalState = null;
+function openExport(kind) {
+  const stamp = new Date().toISOString().slice(0, 10);
+  if (kind === "sheets") {
+    modalState = {
+      title: "Copiar para Google Sheets",
+      content: buildTSV(),
+      help: "Toca «Copiar», abre tu Google Sheet y pega con Ctrl+V (o Cmd+V). Cada dato cae en su propia celda.",
+    };
+  } else if (kind === "csv") {
+    const content = buildCSV();
+    const ok = tryDownload(content, `ayuno-${stamp}.csv`, "text/csv");
+    modalState = { title: "Exportar CSV", content, help: (ok ? "Se intentó descargar. Si no aparece, " : "") + "copia el texto y pégalo en un archivo .csv." };
+  } else {
+    const content = buildJSON();
+    const ok = tryDownload(content, `ayuno-${stamp}.json`, "application/json");
+    modalState = { title: "Exportar JSON (respaldo)", content, help: (ok ? "Se intentó descargar. Si no aparece, " : "") + "copia el texto y guárdalo en un archivo .json." };
+  }
+  renderModal();
+}
+async function copyModal() {
+  try {
+    await navigator.clipboard.writeText(modalState.content);
+    toast("Copiado al portapapeles");
+  } catch (e) {
+    const ta = document.getElementById("modal-textarea");
+    if (ta) { ta.focus(); ta.select();
+      try { document.execCommand("copy"); toast("Copiado"); }
+      catch (_) { toast("Selecciona el texto y copia manualmente"); }
+    }
+  }
+}
+
+// ---------- toast ----------
+let toastTimer = null;
+function toast(msg) {
+  const root = document.getElementById("toast-root");
+  root.innerHTML = `<div class="toast">${esc(msg)}</div>`;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { root.innerHTML = ""; }, 2600);
+}
+
+// ---------- render ----------
+function render() {
+  renderBanner();
+  renderTabs();
+  renderMain();
+}
+
+function renderBanner() {
+  const el = document.getElementById("banner");
+  if (syncState === "offline") {
+    el.innerHTML = `<div class="banner offline">Sin conexión al guardado automático — puedes seguir usando la app, y exportar tus datos como respaldo. Reintentando en segundo plano…</div>`;
+  } else { el.innerHTML = ""; }
+}
+
+function renderTabs() {
+  document.getElementById("tabs").innerHTML = TABS.map((t) =>
+    `<button class="${t.id === activeTab ? "active" : ""}" onclick="setTab('${t.id}')">${t.label}</button>`
+  ).join("");
+}
+
+function setTab(id) { activeTab = id; openForm = null; render(); }
+
+function renderMain() {
+  const main = document.getElementById("main");
+  charts.forEach((c) => { try { c.destroy(); } catch (e) {} });
+  charts = [];
+  if (activeTab === "hoy") main.innerHTML = viewHoy();
+  else if (activeTab === "registro") main.innerHTML = viewRegistro();
+  else if (activeTab === "graficas") { main.innerHTML = viewGraficas(); drawCharts(); }
+  else if (activeTab === "fases") main.innerHTML = viewFases();
+}
+
+// ----- HOY -----
+function viewHoy() {
+  const fh = currentFastHours();
+  const proto = inferProtocol(fh);
+  const lastMeal = data.meals.length ? [...data.meals].sort((a, b) => new Date(b.ts) - new Date(a.ts))[0] : null;
+  const currentPhase = data.phases.length ? [...data.phases].sort((a, b) => new Date(b.startDate) - new Date(a.startDate))[0].protocol : null;
+
+  const size = 220, r = 92, cx = size / 2, cy = size / 2;
+  const capped = fh != null ? Math.min(fh, 24) : 0;
+  const circ = 2 * Math.PI * r;
+  const dash = circ * (capped / 24);
+  const laps = fh != null ? Math.floor(fh / 24) : 0;
+  const clockLabel = laps > 0 ? `vuelta ${laps + 1} · ${proto}` : proto;
+
+  const clock = `
+    <div class="clock-wrap">
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="10"/>
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--amber)" stroke-width="10"
+          stroke-linecap="round" stroke-dasharray="${dash} ${circ}" transform="rotate(-90 ${cx} ${cy})"/>
+        <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="var(--text)" font-family="var(--display)" font-size="30" font-weight="600">${fh != null ? Math.floor(fh) : 0}h</text>
+        <text x="${cx}" y="${cy + 20}" text-anchor="middle" fill="var(--muted)" font-family="var(--body)" font-size="12">${clockLabel}</text>
+      </svg>
+    </div>`;
+
+  const mins = fh != null ? Math.round((fh - Math.floor(fh)) * 60) : null;
+  const bigLabel = fh != null
+    ? `${Math.floor(fh)}h ${mins}m en ayuno · desde ${fmtDateTime(lastMeal.ts)}`
+    : "registra tu primera comida para empezar";
+  const phasePill = currentPhase
+    ? `<div style="text-align:center"><span class="pill" style="background:${(PROTOCOL_COLOR[currentPhase] || "#4FA8A0")}22;color:${PROTOCOL_COLOR[currentPhase] || "#4FA8A0"}">fase actual: ${currentPhase}</span></div>`
+    : "";
+
+  return `<div class="stack">
+    ${clock}
+    <div class="big-label">${esc(bigLabel)}</div>
+    ${phasePill}
+    <div class="actions">
+      <button class="act primary" onclick="openForm='meal';render()">🍽 Comí ahora</button>
+      <button class="act ghost" onclick="openForm='measure';render()">⚖️ Peso/cintura</button>
+      <button class="act ghost" onclick="openForm='ketone';render()">💧 Cetonas</button>
+    </div>
+    ${openForm === "meal" ? formMeal() : ""}
+    ${openForm === "measure" ? formMeasure() : ""}
+    ${openForm === "ketone" ? formKetone() : ""}
+    ${recentList()}
+  </div>`;
+}
+
+function recentList() {
+  const ev = [
+    ...data.meals.map((m) => ({ ...m, kind: "meal", when: m.ts })),
+    ...data.ketones.map((k) => ({ ...k, kind: "ketone", when: k.ts })),
+    ...data.measurements.map((m) => ({ ...m, kind: "measure", when: m.date })),
+  ].sort((a, b) => new Date(b.when) - new Date(a.when)).slice(0, 6);
+  if (!ev.length) return "";
+  const rows = ev.map((e) => {
+    let ico = "🍽", main = "Comida";
+    if (e.kind === "ketone") { ico = "💧"; main = `Cetonas · ${e.value} mmol/L`; }
+    if (e.kind === "measure") { ico = "⚖️"; main = `${e.weight ? e.weight + " kg" : ""}${e.weight && e.waist ? " · " : ""}${e.waist ? e.waist + " cm" : ""}`; }
+    const sub = e.kind === "measure" ? fmtDate(e.when) : fmtDateTime(e.when);
+    return `<div class="row"><div class="ico">${ico}</div><div class="body"><div class="main">${esc(main)}</div><div class="sub2">${sub}</div></div></div>`;
+  }).join("");
+  return `<div class="card"><div class="card-title">Últimos registros</div><div class="list">${rows}</div></div>`;
+}
+
+// ----- forms -----
+function formShell(title, inner) {
+  return `<div class="form">
+    <div class="form-head"><div class="form-title">${title}</div>
+      <button class="icon-btn" onclick="openForm=null;render()">✕</button></div>
+    ${inner}
+  </div>`;
+}
+function formMeal() {
+  return formShell("Registrar comida", `
+    <label>Hora en que comiste</label>
+    <input type="datetime-local" id="meal-ts" value="${nowLocalInputValue()}"/>
+    <label>Nota (opcional)</label>
+    <input type="text" id="meal-note" placeholder="ej. salmón, brócoli y yogur griego"/>
+    <button class="save" onclick="submitMeal()">Guardar</button>`);
+}
+function submitMeal() {
+  const ts = document.getElementById("meal-ts").value;
+  const note = document.getElementById("meal-note").value;
+  if (!ts) return;
+  addMeal(new Date(ts).toISOString(), note);
+}
+function formMeasure() {
+  return formShell("Peso y cintura", `
+    <label>Fecha</label>
+    <input type="date" id="me-date" value="${new Date().toISOString().slice(0,10)}"/>
+    <label>Peso (kg)</label>
+    <input type="number" inputmode="decimal" step="0.1" id="me-weight" placeholder="ej. 78.4"/>
+    <label>Cintura (cm) — opcional, ideal 1x/semana</label>
+    <input type="number" inputmode="decimal" step="0.1" id="me-waist" placeholder="ej. 89"/>
+    <button class="save" onclick="submitMeasure()">Guardar</button>`);
+}
+function submitMeasure() {
+  const date = document.getElementById("me-date").value;
+  const w = document.getElementById("me-weight").value;
+  const waist = document.getElementById("me-waist").value;
+  if (!date || (!w && !waist)) { toast("Ingresa peso o cintura"); return; }
+  addMeasurement(date, w ? parseFloat(w) : null, waist ? parseFloat(waist) : null);
+}
+function formKetone() {
+  return formShell("Cetonas", `
+    <label>Fecha y hora de la medición</label>
+    <input type="datetime-local" id="ke-ts" value="${nowLocalInputValue()}"/>
+    <label>Valor (mmol/L)</label>
+    <input type="number" inputmode="decimal" step="0.1" id="ke-val" placeholder="ej. 1.2"/>
+    <button class="save" onclick="submitKetone()">Guardar</button>`);
+}
+function submitKetone() {
+  const ts = document.getElementById("ke-ts").value;
+  const v = document.getElementById("ke-val").value;
+  if (!ts || !v) { toast("Ingresa el valor"); return; }
+  addKetone(new Date(ts).toISOString(), parseFloat(v));
+}
+
+// ----- REGISTRO -----
+function viewRegistro() {
+  const meals = [...data.meals].sort((a, b) => new Date(b.ts) - new Date(a.ts));
+  const measurements = [...data.measurements].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const ketones = [...data.ketones].sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
+  const mealRows = meals.map((m, i) => {
+    const prev = meals[i + 1];
+    const fasted = prev ? hoursBetween(prev.ts, m.ts) : null;
+    return rowItem("🍽", fmtDateTime(m.ts) + (m.note ? " · " + esc(m.note) : ""),
+      fasted != null ? `ayunaste ${fasted.toFixed(1)}h antes` : "—", `delMeal('${m.id}')`);
+  }).join("");
+  const meRows = measurements.map((m) =>
+    rowItem("⚖️", `${m.weight ? m.weight + " kg" : "—"}${m.waist ? "  ·  " + m.waist + " cm" : ""}`, fmtDate(m.date), `delMeasurement('${m.id}')`)
+  ).join("");
+  const keRows = ketones.map((k) =>
+    rowItem("💧", `${k.value} mmol/L`, fmtDateTime(k.ts), `delKetone('${k.id}')`)
+  ).join("");
+
+  return `<div class="stack">
+    <div class="export-row">
+      <button class="exp sheets" onclick="openExport('sheets')">📋 Copiar para Google Sheets</button>
+      <button class="exp" onclick="openExport('csv')">⬇ CSV</button>
+      <button class="exp" onclick="openExport('json')">⬇ JSON</button>
+    </div>
+    ${syncCard()}
+    ${sectionCard("Comidas", mealRows)}
+    ${sectionCard("Peso y cintura", meRows)}
+    ${sectionCard("Cetonas", keRows)}
+  </div>`;
+}
+
+function syncCard() {
+  const envNote = HAS_WIN_STORAGE
+    ? "⚠️ Estás dentro del artifact: la conexión directa a Sheets suele estar bloqueada aquí. Para probar la sincronización automática, descarga este HTML (botón de descarga) y ábrelo en tu navegador. El copiar/pegar de arriba sí funciona aquí."
+    : "✓ Ejecutándose fuera del artifact: la sincronización automática debería funcionar.";
+  return `<div class="card">
+    <div class="card-title">Sincronización automática con Google Sheets</div>
+    <p class="helper">${envNote}</p>
+    <label>URL del Web App (de tu Apps Script, termina en /exec)</label>
+    <input type="text" id="sync-url" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(syncUrl)}"/>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="save" style="flex:1;margin-top:0" onclick="saveSyncUrl()">Guardar URL y consolidar</button>
+      <button class="act ghost" style="flex:1" onclick="doPull()">Consolidar ahora</button>
+    </div>
+    <p class="helper" style="margin:10px 0 0">La sincronización <b>fusiona</b> por id: junta lo de la app y lo de la hoja sin borrar nada. Pulsa «Consolidar» al cambiar de dispositivo para traer lo nuevo del otro lado.</p>
+    <div id="sync-status" class="sub2" style="margin-top:8px"></div>
+  </div>`;
+}
+function sectionCard(title, rows) {
+  return `<div class="card"><div class="card-title">${title}</div>${rows ? `<div class="list">${rows}</div>` : `<div class="empty">Sin datos todavía.</div>`}</div>`;
+}
+function rowItem(ico, main, sub, delFn) {
+  return `<div class="row"><div class="ico">${ico}</div><div class="body"><div class="main">${main}</div><div class="sub2">${sub}</div></div><button class="del" onclick="${delFn}">🗑</button></div>`;
+}
+
+// ----- GRAFICAS -----
+function viewGraficas() {
+  const hasWeight = data.measurements.some((m) => m.weight != null);
+  const hasWaist = data.measurements.some((m) => m.waist != null);
+  const hasKet = data.ketones.length > 0;
+  if (!hasWeight && !hasWaist && !hasKet) {
+    return `<div class="card"><div class="empty">Todavía no hay suficientes datos para graficar. Registra algunas mediciones desde la pestaña «Hoy».</div></div>`;
+  }
+  let html = `<div class="stack">`;
+  if (hasWeight) html += chartCard("Peso (kg) — línea fina = dato, gruesa = promedio 7 días", "c-weight");
+  if (hasWaist) html += chartCard("Circunferencia abdominal (cm)", "c-waist");
+  if (hasKet) html += chartCard("Cetonas (mmol/L)", "c-ket");
+  html += chartCard("Correlación: horas de ayuno → cetonas", "c-corr-ket");
+  html += chartCard("Correlación: horas de ayuno → cambio de peso siguiente", "c-corr-w");
+  html += `</div>`;
+  return html;
+}
+function chartCard(title, id) {
+  return `<div class="card"><div class="card-title">${title}</div><div class="chart-box"><canvas id="${id}"></canvas></div></div>`;
+}
+
+function drawCharts() {
+  const gridColor = "#2B3040", tickColor = "#8A8FA3";
+  const baseOpts = (xLabel, yLabel) => ({
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } }, title: xLabel ? { display: true, text: xLabel, color: tickColor } : {} },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } }, title: yLabel ? { display: true, text: yLabel, color: tickColor } : {} },
+    },
+  });
+
+  // weight
+  const wEl = document.getElementById("c-weight");
+  if (wEl) {
+    const base = data.measurements.filter((m) => m.weight != null)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map((m) => ({ date: m.date, weight: m.weight }));
+    const withAvg = movingAverage(base, "weight", 7);
+    charts.push(new Chart(wEl, {
+      type: "line",
+      data: {
+        labels: withAvg.map((p) => fmtDate(p.date)),
+        datasets: [
+          { data: withAvg.map((p) => p.weight), borderColor: "#D9694F55", borderWidth: 1.5, pointRadius: 2, tension: 0.3 },
+          { data: withAvg.map((p) => p.avg), borderColor: "#D9694F", borderWidth: 2.5, pointRadius: 0, tension: 0.3 },
+        ],
+      },
+      options: baseOpts(null, null),
+    }));
+  }
+  // waist
+  const waEl = document.getElementById("c-waist");
+  if (waEl) {
+    const base = data.measurements.filter((m) => m.waist != null)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    charts.push(new Chart(waEl, {
+      type: "line",
+      data: { labels: base.map((m) => fmtDate(m.date)), datasets: [{ data: base.map((m) => m.waist), borderColor: "#4FA8A0", borderWidth: 2.5, pointRadius: 3, tension: 0.3 }] },
+      options: baseOpts(null, null),
+    }));
+  }
+  // ketones
+  const kEl = document.getElementById("c-ket");
+  if (kEl) {
+    const base = [...data.ketones].sort((a, b) => new Date(a.ts) - new Date(b.ts));
+    charts.push(new Chart(kEl, {
+      type: "line",
+      data: { labels: base.map((k) => fmtDateTime(k.ts)), datasets: [{ data: base.map((k) => k.value), borderColor: "#E8A33D", borderWidth: 2.5, pointRadius: 3, tension: 0.3 }] },
+      options: baseOpts(null, null),
+    }));
+  }
+  // corr ketones vs fast
+  const ckEl = document.getElementById("c-corr-ket");
+  if (ckEl) {
+    const pts = data.ketones.map((k) => ({ x: hoursFastedBefore(k.ts), y: k.value })).filter((p) => p.x != null);
+    charts.push(new Chart(ckEl, {
+      type: "scatter",
+      data: { datasets: [{ data: pts, backgroundColor: "#E8A33D" }] },
+      options: baseOpts("horas de ayuno", "cetonas mmol/L"),
+    }));
+  }
+  // corr weight delta vs fast
+  const cwEl = document.getElementById("c-corr-w");
+  if (cwEl) {
+    const sorted = data.measurements.filter((m) => m.weight != null).sort((a, b) => new Date(a.date) - new Date(b.date));
+    const pts = [];
+    for (let i = 1; i < sorted.length; i++) {
+      const delta = sorted[i].weight - sorted[i - 1].weight;
+      const fh = hoursFastedBefore(sorted[i].date + "T12:00:00");
+      if (fh != null) pts.push({ x: +fh.toFixed(1), y: +delta.toFixed(2) });
+    }
+    charts.push(new Chart(cwEl, {
+      type: "scatter",
+      data: { datasets: [{ data: pts, backgroundColor: "#D9694F" }] },
+      options: baseOpts("horas de ayuno", "Δ peso kg"),
+    }));
+  }
+}
+
+// ----- FASES -----
+function viewFases() {
+  const phases = [...data.phases].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+  const timeline = phases.length
+    ? phases.map((p) =>
+        `<div class="row"><div class="timeline-dot" style="background:${PROTOCOL_COLOR[p.protocol] || "#4FA8A0"}"></div>
+          <div class="body"><div class="main">${p.protocol}</div><div class="sub2">desde ${fmtDate(p.startDate)}${p.note ? " · " + esc(p.note) : ""}</div></div>
+          <button class="del" onclick="delPhase('${p.id}')">🗑</button></div>`
+      ).join("")
+    : `<div class="empty">Aún no has marcado fases.</div>`;
+
+  return `<div class="stack">
+    <div class="card">
+      <div class="card-title">Progresión de protocolos</div>
+      <p class="helper">Marca cuándo cambiaste de fase (16:8 → 8:16 → OMAD → agua). Colorea tu línea de tiempo para ver si tus resultados cambian entre fases.</p>
+      <button class="act primary" onclick="openForm='phase';render()">＋ Nueva fase</button>
+    </div>
+    ${openForm === "phase" ? formPhase() : ""}
+    <div class="card"><div class="card-title">Línea de tiempo</div><div class="list">${timeline}</div></div>
+  </div>`;
+}
+function formPhase() {
+  const opts = PROTOCOL_OPTIONS.map((p) => `<option value="${p}">${p}</option>`).join("");
+  return formShell("Nueva fase", `
+    <label>Fecha de inicio</label>
+    <input type="date" id="ph-date" value="${new Date().toISOString().slice(0,10)}"/>
+    <label>Protocolo</label>
+    <select id="ph-proto">${opts}</select>
+    <label>Nota (opcional)</label>
+    <input type="text" id="ph-note" placeholder="ej. con supervisión médica"/>
+    <button class="save" onclick="submitPhase()">Guardar</button>`);
+}
+function submitPhase() {
+  const date = document.getElementById("ph-date").value;
+  const proto = document.getElementById("ph-proto").value;
+  const note = document.getElementById("ph-note").value;
+  if (!date) return;
+  addPhase(date, proto, note);
+}
+
+// ----- modal -----
+function renderModal() {
+  const root = document.getElementById("modal-root");
+  if (!modalState) { root.innerHTML = ""; return; }
+  root.innerHTML = `
+    <div class="modal-overlay" onclick="closeModal(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="form-head"><div class="form-title">${modalState.title}</div>
+          <button class="icon-btn" onclick="closeModal()">✕</button></div>
+        <p class="helper">${esc(modalState.help)}</p>
+        <textarea id="modal-textarea" readonly onclick="this.select()">${esc(modalState.content)}</textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="save" style="flex:1;margin-top:0" onclick="copyModal()">Copiar</button>
+          <button class="act ghost" style="flex:1" onclick="closeModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>`;
+}
+function closeModal(e) { modalState = null; renderModal(); }
+
+// ---------- go ----------
+boot();
+</script>
+</body>

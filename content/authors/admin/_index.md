@@ -43,7 +43,9 @@ superuser: true
 title: Hans Martinez
 ---
 
-I'm an Applied Economist interested in Applied Industrial Organization, Public Policy, and Microeconomics. My research combines economic theory and novel empirical methods to develop original identification strategies.
+I'm an Applied Micro-economist. I am passionate about Industrial Organization broadly speaking, production functions and productivity, corporate taxation, market power, the political economy of market structures. My research combines economic theory and novel empirical methods to develop original identification strategies. In my research, I pay special attention to the role of latent variables in the underlying economic model and how those variables affect the identification of the parameters of interest. 
+
+I am currently a PhD candidate in Economics at Western University. I will be in the 2025-2026 job market. 
 
 Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html)
 
