@@ -231,6 +231,39 @@ function hoursFastedBefore(ts) {
   const last = before.sort((a, b) => new Date(b.ts) - new Date(a.ts))[0];
   return hoursBetween(last.ts, ts);
 }
+
+// ---------- rachas ----------
+// Un "ayuno completado" es el hueco entre dos comidas consecutivas.
+// No incluye el ayuno en curso (todavía no terminó).
+function completedFasts() {
+  const sorted = [...data.meals].sort((a, b) => new Date(a.ts) - new Date(b.ts));
+  const out = [];
+  for (let i = 1; i < sorted.length; i++) {
+    const hours = hoursBetween(sorted[i - 1].ts, sorted[i].ts);
+    out.push({ end: sorted[i].ts, hours, protocol: inferProtocol(hours) });
+  }
+  return out; // orden cronológico ascendente
+}
+
+function currentStreak(threshold) {
+  const fasts = completedFasts();
+  let streak = 0;
+  for (let i = fasts.length - 1; i >= 0; i--) {
+    if (fasts[i].hours >= threshold) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function bestStreak(threshold) {
+  const fasts = completedFasts();
+  let best = 0, running = 0;
+  fasts.forEach((f) => {
+    if (f.hours >= threshold) { running++; best = Math.max(best, running); }
+    else running = 0;
+  });
+  return best;
+}
 function movingAverage(arr, key, w = 7) {
   return arr.map((p, i) => {
     const slice = arr.slice(Math.max(0, i - w + 1), i + 1).filter((x) => x[key] != null);
@@ -254,6 +287,8 @@ const HAS_WIN_STORAGE = typeof window !== "undefined" && window.storage && typeo
 const SYNC_KEY = "ayuno-sync-url";
 const DEFAULT_SYNC_URL = "/sync"; // proxy en tu propio dominio (Netlify function)
 let syncUrl = DEFAULT_SYNC_URL;
+const STREAK_KEY = "ayuno-streak-threshold";
+let streakThreshold = 16; // horas mínimas para que un ayuno cuente en la racha
 let sheetSync = "idle"; // idle | pushing | ok | error
 
 async function storeList(key) {
@@ -287,6 +322,10 @@ async function tryLoad() {
       const u = await storeGet(SYNC_KEY);
       syncUrl = (u && u.value) ? u.value : DEFAULT_SYNC_URL;
     } catch (e) { syncUrl = DEFAULT_SYNC_URL; }
+    try {
+      const s = await storeGet(STREAK_KEY);
+      streakThreshold = (s && s.value) ? parseFloat(s.value) : 16;
+    } catch (e) { streakThreshold = 16; }
     syncState = "synced";
     return true;
   } catch (e) {
@@ -384,6 +423,15 @@ async function saveSyncUrl() {
   // pisamos la hoja con datos locales incompletos.
   toast("Endpoint guardado — consolidando…");
   await doPull();
+}
+
+async function setStreakThreshold() {
+  const el = document.getElementById("streak-threshold");
+  const val = el ? parseFloat(el.value) : 16;
+  streakThreshold = isNaN(val) || val <= 0 ? 16 : val;
+  try { await storeSet(STREAK_KEY, String(streakThreshold)); } catch (e) {}
+  toast(`Meta de racha: ${streakThreshold}h`);
+  render();
 }
 
 function renderSyncStatus() {
@@ -581,6 +629,7 @@ function viewHoy() {
     ${clock}
     <div class="big-label">${esc(bigLabel)}</div>
     ${phasePill}
+    ${streakCard()}
     <div class="actions">
       <button class="act primary" onclick="openForm='meal';render()">🍽 Comí ahora</button>
       <button class="act ghost" onclick="openForm='measure';render()">⚖️ Peso/cintura</button>
@@ -590,6 +639,44 @@ function viewHoy() {
     ${openForm === "measure" ? formMeasure() : ""}
     ${openForm === "ketone" ? formKetone() : ""}
     ${recentList()}
+  </div>`;
+}
+
+function streakCard() {
+  const fasts = completedFasts();
+  if (!fasts.length) return "";
+  const streak = currentStreak(streakThreshold);
+  const best = bestStreak(streakThreshold);
+  const isRecord = streak > 0 && streak >= best;
+
+  // últimos hasta 14 ayunos completados, más antiguo primero, como puntos tipo "streak"
+  const recent = fasts.slice(-14);
+  const dots = recent.map((f) => {
+    const ok = f.hours >= streakThreshold;
+    const color = ok ? "var(--amber)" : "var(--border)";
+    const title = `${fmtDate(f.end)} · ${f.hours.toFixed(1)}h`;
+    return `<div title="${title}" style="width:16px;height:16px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0">${ok ? "🔥" : ""}</div>`;
+  }).join("");
+
+  return `<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <div>
+        <div style="font-family:var(--display);font-size:22px;font-weight:600">
+          🔥 ${streak} ${streak === 1 ? "ayuno seguido" : "ayunos seguidos"}
+        </div>
+        <div class="sub2" style="margin-top:2px">
+          récord: ${best}${isRecord && streak > 0 ? " · ¡vas en tu mejor racha!" : ""}
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:4px;margin-top:12px;flex-wrap:wrap">${dots}</div>
+    <details style="margin-top:10px">
+      <summary style="cursor:pointer;color:var(--muted);font-size:12px">Meta actual: ≥ ${streakThreshold}h por ayuno</summary>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <input type="number" id="streak-threshold" value="${streakThreshold}" step="0.5" min="1" style="flex:1"/>
+        <button class="act ghost" style="flex:0 0 auto;padding:10px 14px" onclick="setStreakThreshold()">Guardar</button>
+      </div>
+    </details>
   </div>`;
 }
 
@@ -728,10 +815,12 @@ function viewGraficas() {
   const hasWeight = data.measurements.some((m) => m.weight != null);
   const hasWaist = data.measurements.some((m) => m.waist != null);
   const hasKet = data.ketones.length > 0;
-  if (!hasWeight && !hasWaist && !hasKet) {
+  const hasFasts = completedFasts().length > 0;
+  if (!hasWeight && !hasWaist && !hasKet && !hasFasts) {
     return `<div class="card"><div class="empty">Todavía no hay suficientes datos para graficar. Registra algunas mediciones desde la pestaña «Hoy».</div></div>`;
   }
   let html = `<div class="stack">`;
+  if (hasFasts) html += chartCard("Horas por ayuno — línea punteada = tu meta", "c-fasts");
   if (hasWeight) html += chartCard("Peso (kg) — línea fina = dato, gruesa = promedio 7 días", "c-weight");
   if (hasWaist) html += chartCard("Circunferencia abdominal (cm)", "c-waist");
   if (hasKet) html += chartCard("Cetonas (mmol/L)", "c-ket");
@@ -754,6 +843,38 @@ function drawCharts() {
       y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } }, title: yLabel ? { display: true, text: yLabel, color: tickColor } : {} },
     },
   });
+
+  // horas por ayuno (barras, coloreadas por protocolo) + línea de meta
+  const fEl = document.getElementById("c-fasts");
+  if (fEl) {
+    const fasts = completedFasts();
+    const labels = fasts.map((f) => fmtDate(f.end));
+    charts.push(new Chart(fEl, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            type: "bar",
+            data: fasts.map((f) => +f.hours.toFixed(1)),
+            backgroundColor: fasts.map((f) => PROTOCOL_COLOR[f.protocol] || "#4FA8A0"),
+            borderRadius: 4,
+            order: 2,
+          },
+          {
+            type: "line",
+            data: fasts.map(() => streakThreshold),
+            borderColor: "#8A8FA3",
+            borderDash: [4, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            order: 1,
+          },
+        ],
+      },
+      options: baseOpts(null, "horas"),
+    }));
+  }
 
   // weight
   const wEl = document.getElementById("c-weight");
