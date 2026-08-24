@@ -177,7 +177,7 @@ const TABS = [
   { id: "hoy", label: "Hoy" },
   { id: "registro", label: "Registro" },
   { id: "graficas", label: "Gráficas" },
-  { id: "fases", label: "Fases" },
+  { id: "fases", label: "Protocolos" },
 ];
 const PROTOCOL_OPTIONS = ["12:12", "16:8", "8:16", "OMAD", "24–48h", "Ayuno de agua"];
 const PROTOCOL_COLOR = {
@@ -185,6 +185,56 @@ const PROTOCOL_COLOR = {
   "OMAD": "#D9694F", "24–48h": "#B25B8F", "Ayuno de agua": "#5B7FD9",
   "Ventana amplia": "#5A6272",
 };
+// Horas mínimas para considerar cumplida la meta de cada protocolo — misma
+// escala que usa inferProtocol() para clasificar un ayuno ya ocurrido.
+const PROTOCOL_GOAL_HOURS = {
+  "12:12": 12, "16:8": 16, "8:16": 20, "OMAD": 23, "24–48h": 24, "Ayuno de agua": 48,
+};
+
+// Google Sheets autoconvierte texto tipo "8:16"/"16:8" a un valor de Hora
+// (época interna: 30-dic-1899). Si ese valor vuelve como Date convertido a
+// texto (p.ej. "Sat Dec 30 1899 08:16:00 GMT-0500..."), lo recuperamos aquí
+// en vez de dejar que rompa silenciosamente rachas/gráficas.
+function sanitizeProtocol(v) {
+  if (PROTOCOL_OPTIONS.includes(v)) return v;
+  if (typeof v === "string") {
+    const m = v.match(/1899\D+(\d{1,2}):(\d{2}):\d{2}/);
+    if (m) {
+      const candidate = `${parseInt(m[1], 10)}:${parseInt(m[2], 10)}`;
+      if (PROTOCOL_OPTIONS.includes(candidate)) return candidate;
+    }
+  }
+  return v; // no reconocido — se deja tal cual y se marca en la UI
+}
+function sanitizePhases(list) {
+  return (list || []).map((p) => ({ ...p, protocol: sanitizeProtocol(p.protocol) }));
+}
+
+// Mismo mecanismo de corrupción que sanitizeProtocol pero con números: si una
+// celda de Sheets (peso, cintura, cetonas) hereda formato Fecha/Hora, Apps
+// Script devuelve un Date en vez del número, y si ese Date se serializa vía
+// .getTime() en vez de como número, llega un entero enorme en milisegundos.
+// -2209143600000 ms = 1899-12-30T00:00:00 en la zona horaria del script
+// (Eastern, confirmado con el bug de fases: "GMT-0500 (Eastern Standard
+// Time)") — el serial 0 de Sheets/Excel. Invertimos la fórmula para
+// recuperar el número original de forma exacta.
+const SHEETS_SERIAL_EPOCH_MS = -2209143600000;
+function recoverSheetsNumber(v) {
+  if (typeof v !== "number" || !isFinite(v)) return v;
+  if (Math.abs(v) < 1e6) return v; // ya es un valor humano plausible, no tocar
+  const serial = (v - SHEETS_SERIAL_EPOCH_MS) / 86400000;
+  return +serial.toFixed(4);
+}
+function sanitizeMeasurements(list) {
+  return (list || []).map((m) => ({
+    ...m,
+    weight: m.weight != null ? recoverSheetsNumber(m.weight) : m.weight,
+    waist: m.waist != null ? recoverSheetsNumber(m.waist) : m.waist,
+  }));
+}
+function sanitizeKetones(list) {
+  return (list || []).map((k) => ({ ...k, value: k.value != null ? recoverSheetsNumber(k.value) : k.value }));
+}
 
 // ---------- state ----------
 let data = null;
@@ -235,31 +285,57 @@ function hoursFastedBefore(ts) {
 // ---------- rachas ----------
 // Un "ayuno completado" es el hueco entre dos comidas consecutivas.
 // No incluye el ayuno en curso (todavía no terminó).
+//
+// La meta de cada ayuno la define la FASE que estaba activa cuando terminó
+// (no un umbral global editable a mano) — así, subir la meta al abrir una
+// fase nueva no reescribe retroactivamente si los ayunos pasados "cumplieron"
+// o no: cada uno se evalúa contra la meta que aplicaba en su momento.
+function phaseAt(ts) {
+  const t = new Date(ts);
+  const sorted = [...data.phases].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  let active = null;
+  for (const p of sorted) {
+    if (new Date(p.startDate) <= t) active = p;
+    else break;
+  }
+  return active;
+}
+function goalForPhase(phase) {
+  return phase ? (PROTOCOL_GOAL_HOURS[phase.protocol] ?? null) : null;
+}
+
 function completedFasts() {
   const sorted = [...data.meals].sort((a, b) => new Date(a.ts) - new Date(b.ts));
   const out = [];
   for (let i = 1; i < sorted.length; i++) {
     const hours = hoursBetween(sorted[i - 1].ts, sorted[i].ts);
-    out.push({ end: sorted[i].ts, hours, protocol: inferProtocol(hours) });
+    const phase = phaseAt(sorted[i].ts);
+    out.push({ end: sorted[i].ts, hours, protocol: inferProtocol(hours), phase, goal: goalForPhase(phase) });
   }
   return out; // orden cronológico ascendente
 }
 
-function currentStreak(threshold) {
-  const fasts = completedFasts();
+// Solo cuentan para la racha los ayunos que ocurrieron bajo alguna fase
+// (si no hay fase que los cubra, no hay meta con la que compararlos).
+function streakEligibleFasts() {
+  return completedFasts().filter((f) => f.goal != null);
+}
+
+function currentStreak() {
+  const fasts = streakEligibleFasts();
   let streak = 0;
   for (let i = fasts.length - 1; i >= 0; i--) {
-    if (fasts[i].hours >= threshold) streak++;
+    if (fasts[i].hours >= fasts[i].goal) streak++;
     else break;
   }
   return streak;
 }
 
-function bestStreak(threshold) {
-  const fasts = completedFasts();
+function bestStreak() {
+  const fasts = streakEligibleFasts();
   let best = 0, running = 0;
   fasts.forEach((f) => {
-    if (f.hours >= threshold) { running++; best = Math.max(best, running); }
+    if (f.hours >= f.goal) { running++; best = Math.max(best, running); }
     else running = 0;
   });
   return best;
@@ -287,8 +363,6 @@ const HAS_WIN_STORAGE = typeof window !== "undefined" && window.storage && typeo
 const SYNC_KEY = "ayuno-sync-url";
 const DEFAULT_SYNC_URL = "/sync"; // proxy en tu propio dominio (Netlify function)
 let syncUrl = DEFAULT_SYNC_URL;
-const STREAK_KEY = "ayuno-streak-threshold";
-let streakThreshold = 16; // horas mínimas para que un ayuno cuente en la racha
 let sheetSync = "idle"; // idle | pushing | ok | error
 
 async function storeList(key) {
@@ -318,14 +392,13 @@ async function tryLoad() {
     } else {
       data = data || emptyData();
     }
+    data.phases = sanitizePhases(data.phases);
+    data.measurements = sanitizeMeasurements(data.measurements);
+    data.ketones = sanitizeKetones(data.ketones);
     try {
       const u = await storeGet(SYNC_KEY);
       syncUrl = (u && u.value) ? u.value : DEFAULT_SYNC_URL;
     } catch (e) { syncUrl = DEFAULT_SYNC_URL; }
-    try {
-      const s = await storeGet(STREAK_KEY);
-      streakThreshold = (s && s.value) ? parseFloat(s.value) : 16;
-    } catch (e) { streakThreshold = 16; }
     syncState = "synced";
     return true;
   } catch (e) {
@@ -351,9 +424,9 @@ function mergeData(base, incoming) {
   base = base || {}; incoming = incoming || {};
   const merged = {
     meals: mergeById(base.meals, incoming.meals),
-    measurements: mergeByDate(base.measurements, incoming.measurements),
-    ketones: mergeById(base.ketones, incoming.ketones),
-    phases: mergeById(base.phases, incoming.phases),
+    measurements: sanitizeMeasurements(mergeByDate(base.measurements, incoming.measurements)),
+    ketones: sanitizeKetones(mergeById(base.ketones, incoming.ketones)),
+    phases: sanitizePhases(mergeById(base.phases, incoming.phases)),
   };
   merged.measurements.sort((a, b) => new Date(a.date) - new Date(b.date));
   merged.phases.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
@@ -425,15 +498,6 @@ async function saveSyncUrl() {
   await doPull();
 }
 
-async function setStreakThreshold() {
-  const el = document.getElementById("streak-threshold");
-  const val = el ? parseFloat(el.value) : 16;
-  streakThreshold = isNaN(val) || val <= 0 ? 16 : val;
-  try { await storeSet(STREAK_KEY, String(streakThreshold)); } catch (e) {}
-  toast(`Meta de racha: ${streakThreshold}h`);
-  render();
-}
-
 function renderSyncStatus() {
   const el = document.getElementById("sync-status");
   if (!el) return;
@@ -489,7 +553,7 @@ function delKetone(id) { data.ketones = data.ketones.filter((k) => k.id !== id);
 function addPhase(startDate, protocol, note) {
   data.phases.push({ id: uid(), startDate, protocol, note });
   data.phases.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-  openForm = null; commit("Fase agregada");
+  openForm = null; commit("Protocolo agregado");
 }
 function delPhase(id) { data.phases = data.phases.filter((p) => p.id !== id); commit(); }
 
@@ -622,7 +686,7 @@ function viewHoy() {
     ? `${Math.floor(fh)}h ${mins}m en ayuno · desde ${fmtDateTime(lastMeal.ts)}`
     : "registra tu primera comida para empezar";
   const phasePill = currentPhase
-    ? `<div style="text-align:center"><span class="pill" style="background:${(PROTOCOL_COLOR[currentPhase] || "#4FA8A0")}22;color:${PROTOCOL_COLOR[currentPhase] || "#4FA8A0"}">fase actual: ${currentPhase}</span></div>`
+    ? `<div style="text-align:center"><span class="pill" style="background:${(PROTOCOL_COLOR[currentPhase] || "#4FA8A0")}22;color:${PROTOCOL_COLOR[currentPhase] || "#4FA8A0"}">protocolo actual: ${esc(currentPhase)}</span></div>`
     : "";
 
   return `<div class="stack">
@@ -643,20 +707,36 @@ function viewHoy() {
 }
 
 function streakCard() {
-  const fasts = completedFasts();
-  if (!fasts.length) return "";
-  const streak = currentStreak(streakThreshold);
-  const best = bestStreak(streakThreshold);
+  if (!data.phases.length) {
+    return `<div class="card">
+      <div class="card-title">🔥 Rachas</div>
+      <p class="helper" style="margin:0">Para ver tus rachas, agrega tus metas en <b>Protocolos</b>.</p>
+    </div>`;
+  }
+  const fasts = streakEligibleFasts();
+  if (!fasts.length) {
+    const hasUnknown = data.phases.some((p) => !PROTOCOL_OPTIONS.includes(p.protocol));
+    return `<div class="card">
+      <div class="card-title">🔥 Rachas</div>
+      <p class="helper" style="margin:0">${hasUnknown
+        ? "Alguno de tus protocolos no se reconoce (revisa <b>Protocolos</b> — puede que haya que borrarlo y agregarlo de nuevo)."
+        : "Ninguno de tus ayunos registrados cae dentro de un protocolo todavía."}</p>
+    </div>`;
+  }
+  const streak = currentStreak();
+  const best = bestStreak();
   const isRecord = streak > 0 && streak >= best;
 
   // últimos hasta 14 ayunos completados, más antiguo primero, como puntos tipo "streak"
   const recent = fasts.slice(-14);
   const dots = recent.map((f) => {
-    const ok = f.hours >= streakThreshold;
+    const ok = f.hours >= f.goal;
     const color = ok ? "var(--amber)" : "var(--border)";
-    const title = `${fmtDate(f.end)} · ${f.hours.toFixed(1)}h`;
+    const title = `${fmtDate(f.end)} · ${f.hours.toFixed(1)}h (meta ${f.goal}h)`;
     return `<div title="${title}" style="width:16px;height:16px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0">${ok ? "🔥" : ""}</div>`;
   }).join("");
+
+  const currentGoal = goalForPhase(phaseAt(new Date()));
 
   return `<div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
@@ -670,13 +750,11 @@ function streakCard() {
       </div>
     </div>
     <div style="display:flex;gap:4px;margin-top:12px;flex-wrap:wrap">${dots}</div>
-    <details style="margin-top:10px">
-      <summary style="cursor:pointer;color:var(--muted);font-size:12px">Meta actual: ≥ ${streakThreshold}h por ayuno</summary>
-      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-        <input type="number" id="streak-threshold" value="${streakThreshold}" step="0.5" min="1" style="flex:1"/>
-        <button class="act ghost" style="flex:0 0 auto;padding:10px 14px" onclick="setStreakThreshold()">Guardar</button>
-      </div>
-    </details>
+    <div class="sub2" style="margin-top:10px">
+      ${currentGoal != null
+        ? `Meta actual (según protocolo): ≥ ${currentGoal}h por ayuno`
+        : `Sin protocolo que cubra la fecha de hoy — agrega uno en <b>Protocolos</b>.`}
+    </div>
   </div>`;
 }
 
@@ -822,10 +900,10 @@ function viewGraficas() {
   let html = `<div class="stack">`;
   if (hasFasts) html += chartCard("Horas por ayuno — línea punteada = tu meta", "c-fasts");
   if (hasWeight) html += chartCard("Peso (kg) — línea fina = dato, gruesa = promedio 7 días", "c-weight");
-  if (hasWaist) html += chartCard("Circunferencia abdominal (cm)", "c-waist");
+  if (hasWaist) html += chartCard("Circunferencia abdominal (cm) — línea fina = dato, gruesa = promedio de las últimas mediciones", "c-waist");
   if (hasKet) html += chartCard("Cetonas (mmol/L)", "c-ket");
   html += chartCard("Correlación: horas de ayuno → cetonas", "c-corr-ket");
-  html += chartCard("Correlación: horas de ayuno → cambio de peso siguiente", "c-corr-w");
+  if (hasWeight) html += chartCard("Peso perdido entre mediciones (kg) — negativo = subiste", "c-weight-rate");
   html += `</div>`;
   return html;
 }
@@ -863,7 +941,7 @@ function drawCharts() {
           },
           {
             type: "line",
-            data: fasts.map(() => streakThreshold),
+            data: fasts.map((f) => f.goal),
             borderColor: "#8A8FA3",
             borderDash: [4, 4],
             borderWidth: 1.5,
@@ -899,10 +977,18 @@ function drawCharts() {
   const waEl = document.getElementById("c-waist");
   if (waEl) {
     const base = data.measurements.filter((m) => m.waist != null)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map((m) => ({ date: m.date, waist: m.waist }));
+    const withAvg = movingAverage(base, "waist", 7);
     charts.push(new Chart(waEl, {
       type: "line",
-      data: { labels: base.map((m) => fmtDate(m.date)), datasets: [{ data: base.map((m) => m.waist), borderColor: "#4FA8A0", borderWidth: 2.5, pointRadius: 3, tension: 0.3 }] },
+      data: {
+        labels: withAvg.map((p) => fmtDate(p.date)),
+        datasets: [
+          { data: withAvg.map((p) => p.waist), borderColor: "#4FA8A055", borderWidth: 1.5, pointRadius: 2, tension: 0.3 },
+          { data: withAvg.map((p) => p.avg), borderColor: "#4FA8A0", borderWidth: 2.5, pointRadius: 0, tension: 0.3 },
+        ],
+      },
       options: baseOpts(null, null),
     }));
   }
@@ -926,20 +1012,38 @@ function drawCharts() {
       options: baseOpts("horas de ayuno", "cetonas mmol/L"),
     }));
   }
-  // corr weight delta vs fast
-  const cwEl = document.getElementById("c-corr-w");
-  if (cwEl) {
-    const sorted = data.measurements.filter((m) => m.weight != null).sort((a, b) => new Date(a.date) - new Date(b.date));
-    const pts = [];
-    for (let i = 1; i < sorted.length; i++) {
-      const delta = sorted[i].weight - sorted[i - 1].weight;
-      const fh = hoursFastedBefore(sorted[i].date + "T12:00:00");
-      if (fh != null) pts.push({ x: +fh.toFixed(1), y: +delta.toFixed(2) });
-    }
-    charts.push(new Chart(cwEl, {
-      type: "scatter",
-      data: { datasets: [{ data: pts, backgroundColor: "#D9694F" }] },
-      options: baseOpts("horas de ayuno", "Δ peso kg"),
+  // cambio entre mediciones del promedio móvil de peso: ya viene filtrado de
+  // ruido (se construye sobre el promedio de 7, no el dato crudo) y muestra
+  // el aplanamiento al acercarte a tu peso ideal como una curva que se
+  // achica. Compara contra el punto anterior (no "hace 7 mediciones") para
+  // que aparezca desde la segunda medición, sin importar la cadencia real.
+  const wrEl = document.getElementById("c-weight-rate");
+  if (wrEl) {
+    const base = data.measurements.filter((m) => m.weight != null)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map((m) => ({ date: m.date, weight: m.weight }));
+    const withAvg = movingAverage(base, "weight", 7);
+    const pts = withAvg.map((p, i) => {
+      const prev = withAvg[i - 1];
+      // positivo = kg perdidos, negativo = kg subidos
+      const delta = (prev && prev.avg != null && p.avg != null) ? +(prev.avg - p.avg).toFixed(2) : null;
+      return { date: p.date, delta };
+    }).filter((p) => p.delta != null);
+    charts.push(new Chart(wrEl, {
+      type: "line",
+      data: {
+        labels: pts.map((p) => fmtDate(p.date)),
+        datasets: [{
+          data: pts.map((p) => p.delta),
+          borderColor: "#8A8FA3",
+          borderWidth: 1.5,
+          tension: 0.3,
+          pointRadius: 5,
+          pointBackgroundColor: pts.map((p) => p.delta >= 0 ? "#4FA8A0" : "#D9694F"),
+          pointBorderColor: pts.map((p) => p.delta >= 0 ? "#4FA8A0" : "#D9694F"),
+        }],
+      },
+      options: baseOpts(null, "kg perdidos entre mediciones"),
     }));
   }
 }
@@ -947,19 +1051,34 @@ function drawCharts() {
 // ----- FASES -----
 function viewFases() {
   const phases = [...data.phases].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+  const ascPhases = [...data.phases].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  const allFasts = completedFasts();
   const timeline = phases.length
-    ? phases.map((p) =>
-        `<div class="row"><div class="timeline-dot" style="background:${PROTOCOL_COLOR[p.protocol] || "#4FA8A0"}"></div>
-          <div class="body"><div class="main">${p.protocol}</div><div class="sub2">desde ${fmtDate(p.startDate)}${p.note ? " · " + esc(p.note) : ""}</div></div>
-          <button class="del" onclick="delPhase('${p.id}')">🗑</button></div>`
-      ).join("")
-    : `<div class="empty">Aún no has marcado fases.</div>`;
+    ? phases.map((p) => {
+        const idx = ascPhases.findIndex((x) => x.id === p.id);
+        const next = ascPhases[idx + 1];
+        const endBound = next ? new Date(next.startDate) : new Date();
+        const days = Math.max(0, Math.floor(hoursBetween(p.startDate, endBound) / 24));
+        const inPhase = allFasts.filter((f) => {
+          const t = new Date(f.end);
+          return t >= new Date(p.startDate) && (!next || t < new Date(next.startDate));
+        });
+        const goal = PROTOCOL_GOAL_HOURS[p.protocol];
+        const fulfilled = inPhase.filter((f) => goal != null && f.hours >= goal).length;
+        const metaTxt = inPhase.length ? ` · ${fulfilled}/${inPhase.length} cumplieron la meta` : "";
+        const known = PROTOCOL_OPTIONS.includes(p.protocol);
+        const label = known ? esc(p.protocol) : `⚠️ protocolo no reconocido`;
+        return `<div class="row"><div class="timeline-dot" style="background:${PROTOCOL_COLOR[p.protocol] || "#4FA8A0"}"></div>
+          <div class="body"><div class="main">${label}</div><div class="sub2">desde ${fmtDate(p.startDate)} · ${days} día${days === 1 ? "" : "s"}${metaTxt}${p.note ? " · " + esc(p.note) : ""}${known ? "" : ` · valor guardado: ${esc(String(p.protocol))}`}</div></div>
+          <button class="del" onclick="delPhase('${p.id}')">🗑</button></div>`;
+      }).join("")
+    : `<div class="empty">Aún no has marcado protocolos.</div>`;
 
   return `<div class="stack">
     <div class="card">
       <div class="card-title">Progresión de protocolos</div>
-      <p class="helper">Marca cuándo cambiaste de fase (16:8 → 8:16 → OMAD → agua). Colorea tu línea de tiempo para ver si tus resultados cambian entre fases.</p>
-      <button class="act primary" onclick="openForm='phase';render()">＋ Nueva fase</button>
+      <p class="helper">Marca cuándo cambiaste de protocolo (16:8 → 8:16 → OMAD → agua). Colorea tu línea de tiempo para ver si tus resultados cambian entre protocolos.</p>
+      <button class="act primary" onclick="openForm='phase';render()">＋ Nuevo protocolo</button>
     </div>
     ${openForm === "phase" ? formPhase() : ""}
     <div class="card"><div class="card-title">Línea de tiempo</div><div class="list">${timeline}</div></div>
@@ -967,7 +1086,7 @@ function viewFases() {
 }
 function formPhase() {
   const opts = PROTOCOL_OPTIONS.map((p) => `<option value="${p}">${p}</option>`).join("");
-  return formShell("Nueva fase", `
+  return formShell("Nuevo protocolo", `
     <label>Fecha de inicio</label>
     <input type="date" id="ph-date" value="${new Date().toISOString().slice(0,10)}"/>
     <label>Protocolo</label>
@@ -1003,6 +1122,24 @@ function renderModal() {
     </div>`;
 }
 function closeModal(e) { modalState = null; renderModal(); }
+
+// ---------- reloj en vivo ----------
+// El contador de horas de ayuno depende de la hora actual, no de un evento.
+// Sin esto, se queda "congelado" hasta que agregas algo o consolidas —
+// no se refresca solo, especialmente en modo app (PWA) donde no hay
+// pull-to-refresh nativo. Se pausa si hay un formulario abierto para no
+// borrar lo que el usuario está escribiendo a mitad de un refresco.
+function refreshIfSafe() {
+  if (openForm) return;
+  render();
+}
+setInterval(() => {
+  if (activeTab === "hoy") refreshIfSafe();
+}, 60000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refreshIfSafe();
+});
+window.addEventListener("pageshow", () => refreshIfSafe());
 
 // ---------- go ----------
 boot();
