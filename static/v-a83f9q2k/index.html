@@ -253,6 +253,8 @@ function sanitizeMeasurements(list) {
     ...m,
     weight: m.weight != null ? recoverSheetsNumber(m.weight) : m.weight,
     waist: m.waist != null ? recoverSheetsNumber(m.waist) : m.waist,
+    neck: m.neck != null ? recoverSheetsNumber(m.neck) : m.neck,
+    hip: m.hip != null ? recoverSheetsNumber(m.hip) : m.hip,
   }));
 }
 function sanitizeKetones(list) {
@@ -363,6 +365,24 @@ function bestStreak() {
   });
   return best;
 }
+// Método Navy: estima % de grasa corporal a partir de circunferencias
+// (cuello, cintura, y cadera solo para la fórmula de mujer) + altura y
+// sexo. Requiere settings.heightCm/settings.sex (ver "Datos personales" en
+// Registro) además de los campos opcionales de la medición.
+function bodyFatPercent(m) {
+  if (!settings || !settings.heightCm || !settings.sex) return null;
+  if (m.waist == null || m.neck == null) return null;
+  const h = settings.heightCm;
+  if (settings.sex === "M") {
+    const denom = m.waist - m.neck;
+    if (denom <= 0) return null;
+    return 495 / (1.0324 - 0.19077 * Math.log10(denom) + 0.15456 * Math.log10(h)) - 450;
+  }
+  if (m.hip == null) return null;
+  const denom = m.waist + m.hip - m.neck;
+  if (denom <= 0) return null;
+  return 495 / (1.29579 - 0.35004 * Math.log10(denom) + 0.22100 * Math.log10(h)) - 450;
+}
 function movingAverage(arr, key, w = 7) {
   return arr.map((p, i) => {
     const slice = arr.slice(Math.max(0, i - w + 1), i + 1).filter((x) => x[key] != null);
@@ -387,6 +407,14 @@ const SYNC_KEY = "ayuno-sync-url";
 const DEFAULT_SYNC_URL = "/sync"; // proxy en tu propio dominio (Netlify function)
 let syncUrl = DEFAULT_SYNC_URL;
 let sheetSync = "idle"; // idle | pushing | ok | error
+
+// Altura y sexo son estáticos (no cambian medición a medición) y solo se
+// usan para calcular % de grasa corporal — se guardan aparte de `data`
+// (como syncUrl) en vez de dentro del objeto que se sincroniza con Sheets,
+// porque son un dato personal fijo, no un evento con fecha propio del
+// esquema de filas de Code.gs.
+const SETTINGS_KEY = "ayuno-settings";
+let settings = { heightCm: null, sex: null }; // sex: "M" | "F"
 
 async function storeList(key) {
   if (HAS_WIN_STORAGE) return window.storage.list(key, false);
@@ -422,6 +450,10 @@ async function tryLoad() {
       const u = await storeGet(SYNC_KEY);
       syncUrl = (u && u.value) ? u.value : DEFAULT_SYNC_URL;
     } catch (e) { syncUrl = DEFAULT_SYNC_URL; }
+    try {
+      const s = await storeGet(SETTINGS_KEY);
+      settings = (s && s.value) ? JSON.parse(s.value) : { heightCm: null, sex: null };
+    } catch (e) { settings = { heightCm: null, sex: null }; }
     syncState = "synced";
     return true;
   } catch (e) {
@@ -440,7 +472,24 @@ function mergeById(a, b) {
 function mergeByDate(a, b) {
   const map = new Map();
   (a || []).forEach((x) => { if (x && x.date) map.set(x.date, x); });
-  (b || []).forEach((x) => { if (x && x.date) map.set(x.date, x); });
+  (b || []).forEach((x) => {
+    if (!x || !x.date) return;
+    const existing = map.get(x.date);
+    if (!existing) { map.set(x.date, x); return; }
+    // Fusión por campo, no por objeto completo: Code.gs (fuera de este repo)
+    // guarda mediciones en columnas valor1/valor2 y no conoce cuello/cadera
+    // todavía, así que lo que venga de Sheets puede llegar sin esos campos.
+    // Si reemplazáramos el objeto entero, un pull borraría cuello/cadera
+    // guardados localmente aunque el otro lado nunca los haya tenido.
+    map.set(x.date, {
+      id: x.id || existing.id,
+      date: x.date,
+      weight: x.weight ?? existing.weight ?? null,
+      waist: x.waist ?? existing.waist ?? null,
+      neck: x.neck ?? existing.neck ?? null,
+      hip: x.hip ?? existing.hip ?? null,
+    });
+  });
   return Array.from(map.values());
 }
 function mergeData(base, incoming) {
@@ -521,6 +570,15 @@ async function saveSyncUrl() {
   await doPull();
 }
 
+async function saveSettings() {
+  const h = document.getElementById("set-height").value;
+  const sex = document.getElementById("set-sex").value;
+  settings = { heightCm: h ? parseFloat(h) : null, sex: sex || null };
+  try { await storeSet(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) {}
+  toast("Datos personales guardados");
+  render();
+}
+
 function renderSyncStatus() {
   const el = document.getElementById("sync-status");
   if (!el) return;
@@ -564,9 +622,9 @@ function commit(msg) { scheduleSave(); render(); if (msg) toast(msg); }
 
 function addMeal(ts, note) { data.meals.push({ id: uid(), ts, note }); openForm = null; commit("Comida registrada"); }
 function delMeal(id) { data.meals = data.meals.filter((m) => m.id !== id); commit(); }
-function addMeasurement(date, weight, waist) {
+function addMeasurement(date, weight, waist, neck, hip) {
   data.measurements = data.measurements.filter((m) => m.date !== date);
-  data.measurements.push({ id: uid(), date, weight, waist });
+  data.measurements.push({ id: uid(), date, weight, waist, neck, hip });
   data.measurements.sort((a, b) => new Date(a.date) - new Date(b.date));
   openForm = null; commit("Medición guardada");
 }
@@ -828,14 +886,26 @@ function formMeasure() {
     <input type="number" inputmode="decimal" step="0.1" id="me-weight" placeholder="ej. 78.4"/>
     <label>Cintura (cm) — opcional, ideal 1x/semana</label>
     <input type="number" inputmode="decimal" step="0.1" id="me-waist" placeholder="ej. 89"/>
+    <label>Cuello (cm) — opcional, para % de grasa corporal</label>
+    <input type="number" inputmode="decimal" step="0.1" id="me-neck" placeholder="ej. 38"/>
+    <label>Cadera (cm) — opcional, solo si usas la fórmula de mujer</label>
+    <input type="number" inputmode="decimal" step="0.1" id="me-hip" placeholder="ej. 95"/>
     <button class="save" onclick="submitMeasure()">Guardar</button>`);
 }
 function submitMeasure() {
   const date = document.getElementById("me-date").value;
   const w = document.getElementById("me-weight").value;
   const waist = document.getElementById("me-waist").value;
-  if (!date || (!w && !waist)) { toast("Ingresa peso o cintura"); return; }
-  addMeasurement(date, w ? parseFloat(w) : null, waist ? parseFloat(waist) : null);
+  const neck = document.getElementById("me-neck").value;
+  const hip = document.getElementById("me-hip").value;
+  if (!date || (!w && !waist && !neck && !hip)) { toast("Ingresa al menos un dato"); return; }
+  addMeasurement(
+    date,
+    w ? parseFloat(w) : null,
+    waist ? parseFloat(waist) : null,
+    neck ? parseFloat(neck) : null,
+    hip ? parseFloat(hip) : null
+  );
 }
 function formKetone() {
   return formShell("Cetonas", `
@@ -864,14 +934,22 @@ function viewRegistro() {
     return rowItem("🍽", fmtDateTime(m.ts) + (m.note ? " · " + esc(m.note) : ""),
       fasted != null ? `ayunaste ${fasted.toFixed(1)}h antes` : "—", `delMeal('${m.id}')`);
   }).join("");
-  const meRows = measurements.map((m) =>
-    rowItem("⚖️", `${m.weight ? m.weight + " kg" : "—"}${m.waist ? "  ·  " + m.waist + " cm" : ""}`, fmtDate(m.date), `delMeasurement('${m.id}')`)
-  ).join("");
+  const meRows = measurements.map((m) => {
+    const parts = [];
+    if (m.weight != null) parts.push(m.weight + " kg");
+    if (m.waist != null) parts.push("cintura " + m.waist + " cm");
+    if (m.neck != null) parts.push("cuello " + m.neck + " cm");
+    if (m.hip != null) parts.push("cadera " + m.hip + " cm");
+    const bf = bodyFatPercent(m);
+    if (bf != null) parts.push(bf.toFixed(1) + "% grasa");
+    return rowItem("⚖️", parts.join(" · ") || "—", fmtDate(m.date), `delMeasurement('${m.id}')`);
+  }).join("");
   const keRows = ketones.map((k) =>
     rowItem("💧", `${k.value} mmol/L`, fmtDateTime(k.ts), `delKetone('${k.id}')`)
   ).join("");
 
   return `<div class="stack">
+    ${settingsCard()}
     <div class="export-row">
       <button class="exp sheets" onclick="openExport('sheets')">📋 Copiar para Google Sheets</button>
       <button class="exp" onclick="openExport('csv')">⬇ CSV</button>
@@ -881,6 +959,23 @@ function viewRegistro() {
     ${sectionCard("Comidas", mealRows)}
     ${sectionCard("Peso y cintura", meRows)}
     ${sectionCard("Cetonas", keRows)}
+  </div>`;
+}
+
+function settingsCard() {
+  const s = settings || {};
+  return `<div class="card">
+    <div class="card-title">Datos personales</div>
+    <p class="helper" style="margin-bottom:10px">Altura y sexo, para calcular tu % de grasa corporal (método Navy) a partir de cuello y cintura. Se guardan una sola vez en este dispositivo.</p>
+    <label>Altura (cm)</label>
+    <input type="number" inputmode="decimal" step="0.1" id="set-height" value="${s.heightCm ?? ""}" placeholder="ej. 178"/>
+    <label>Sexo (define qué fórmula se usa)</label>
+    <select id="set-sex">
+      <option value="" ${!s.sex ? "selected" : ""}>Selecciona…</option>
+      <option value="M" ${s.sex === "M" ? "selected" : ""}>Hombre</option>
+      <option value="F" ${s.sex === "F" ? "selected" : ""}>Mujer</option>
+    </select>
+    <button class="save" onclick="saveSettings()">Guardar</button>
   </div>`;
 }
 
@@ -924,11 +1019,25 @@ function viewGraficas() {
   if (hasFasts) html += chartCard("Horas por ayuno — línea punteada = tu meta", "c-fasts");
   if (hasWeight) html += chartCard("Peso (kg) — línea fina = dato, gruesa = promedio 7 días", "c-weight");
   if (hasWaist) html += chartCard("Circunferencia abdominal (cm) — línea fina = dato, gruesa = promedio de las últimas mediciones", "c-waist");
+  html += bodyFatSection();
   if (hasKet) html += chartCard("Cetonas (mmol/L)", "c-ket", ketoneLegend()) + ketoneSymptomsWarning();
   html += chartCard("Correlación: horas de ayuno → cetonas", "c-corr-ket");
   if (hasWeight) html += chartCard("Peso perdido entre mediciones (kg) — negativo = subiste", "c-weight-rate");
   html += `</div>`;
   return html;
+}
+function bodyFatSection() {
+  if (!settings || !settings.heightCm || !settings.sex) {
+    return `<div class="card"><div class="card-title">% de grasa corporal</div>
+      <p class="helper" style="margin:0">Para calcularlo, completa tu altura y sexo en <b>Registro → Datos personales</b>.</p></div>`;
+  }
+  const hasBF = data.measurements.some((m) => bodyFatPercent(m) != null);
+  if (!hasBF) {
+    const needsHip = settings.sex === "F";
+    return `<div class="card"><div class="card-title">% de grasa corporal</div>
+      <p class="helper" style="margin:0">Registra cuello y cintura${needsHip ? " y cadera" : ""} juntos (en «⚖️ Peso/cintura») para calcularlo.</p></div>`;
+  }
+  return chartCard("% de grasa corporal (método Navy) — línea fina = dato, gruesa = promedio", "c-bodyfat");
 }
 function chartCard(title, id, footer) {
   return `<div class="card"><div class="card-title">${title}</div><div class="chart-box"><canvas id="${id}"></canvas></div>${footer || ""}</div>`;
@@ -1060,6 +1169,26 @@ function drawCharts() {
         ],
       },
       options: baseOpts(null, null),
+    }));
+  }
+  // % grasa corporal (método Navy) — mismo patrón línea fina/gruesa que peso y cintura
+  const bfEl = document.getElementById("c-bodyfat");
+  if (bfEl) {
+    const base = data.measurements
+      .map((m) => ({ date: m.date, bf: bodyFatPercent(m) }))
+      .filter((p) => p.bf != null)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const withAvg = movingAverage(base, "bf", 7);
+    charts.push(new Chart(bfEl, {
+      type: "line",
+      data: {
+        labels: withAvg.map((p) => fmtDate(p.date)),
+        datasets: [
+          { data: withAvg.map((p) => +p.bf.toFixed(1)), borderColor: "#B25B8F55", borderWidth: 1.5, pointRadius: 2, tension: 0.3 },
+          { data: withAvg.map((p) => p.avg), borderColor: "#B25B8F", borderWidth: 2.5, pointRadius: 0, tension: 0.3 },
+        ],
+      },
+      options: baseOpts(null, "%"),
     }));
   }
   // ketones — con bandas de fondo de KETONE_BANDS para dar contexto de interpretación
