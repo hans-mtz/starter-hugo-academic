@@ -214,6 +214,28 @@ const KETONE_SYMPTOMS = [
   "Palpitaciones o debilidad extrema",
 ];
 
+// Zonas de % de grasa corporal (método Navy, ver bodyFatPercent) — referencia
+// deportiva estándar ACE (American Council on Exercise), no un umbral clínico.
+// Distinta por sexo porque la grasa esencial y "atlético" difieren bastante
+// entre hombre y mujer (misma razón por la que bodyFatPercent() ya usa una
+// fórmula distinta según settings.sex).
+const BODY_FAT_BANDS = {
+  M: [
+    { min: 0, max: 6, label: "Grasa esencial", color: "#5A6272" },
+    { min: 6, max: 14, label: "Atlético", color: "#4FA8A0" },
+    { min: 14, max: 18, label: "En forma", color: "#7BB8B0" },
+    { min: 18, max: 25, label: "Aceptable", color: "#E8A33D" },
+    { min: 25, max: Infinity, label: "Obesidad", color: "#D9694F" },
+  ],
+  F: [
+    { min: 0, max: 14, label: "Grasa esencial", color: "#5A6272" },
+    { min: 14, max: 21, label: "Atlético", color: "#4FA8A0" },
+    { min: 21, max: 25, label: "En forma", color: "#7BB8B0" },
+    { min: 25, max: 32, label: "Aceptable", color: "#E8A33D" },
+    { min: 32, max: Infinity, label: "Obesidad", color: "#D9694F" },
+  ],
+};
+
 // Google Sheets autoconvierte texto tipo "8:16"/"16:8" a un valor de Hora
 // (época interna: 30-dic-1899). Si ese valor vuelve como Date convertido a
 // texto (p.ej. "Sat Dec 30 1899 08:16:00 GMT-0500..."), lo recuperamos aquí
@@ -340,10 +362,36 @@ function completedFasts() {
   return out; // orden cronológico ascendente
 }
 
-// Solo cuentan para la racha los ayunos que ocurrieron bajo alguna fase
-// (si no hay fase que los cubra, no hay meta con la que compararlos).
+// Filosofía "un ayuno de varios días = varios días de meta cumplida", no "un
+// evento largo que vale 1 punto". Un ayuno de 48h no es una racha de 1 — son
+// 2 días completos sin comer, así que debe valer 2. Cada ayuno >24h se parte
+// en bloques de 24h; cada bloque cuenta como día cumplido SIN mirar la meta
+// del protocolo (a propósito: la meta de "Ayuno de agua" es 48h porque mide
+// el ayuno completo, no un día suelto — usarla para juzgar un bloque de un
+// solo día penalizaría casi cualquier ayuno de varios días).
+// El sobrante final (<24h) se descarta en silencio: ni suma ni rompe racha,
+// simplemente es un día sin terminar todavía — no inventamos un "día
+// fallido" a partir de un ayuno que en la vida real sí fue exitoso.
+function expandFastForStreaks(f) {
+  if (f.hours <= 24) return [f];
+  const fullDays = Math.floor(f.hours / 24);
+  const fastStartMs = new Date(f.end).getTime() - f.hours * 36e5;
+  const out = [];
+  for (let i = 1; i <= fullDays; i++) {
+    const end = new Date(fastStartMs + i * 24 * 36e5).toISOString();
+    out.push({ end, hours: 24, protocol: f.protocol, phase: phaseAt(end), goal: 24 });
+  }
+  return out;
+}
+function expandedFasts() {
+  return completedFasts().flatMap(expandFastForStreaks);
+}
+
+// Solo cuentan para la racha los ayunos (o días de ayuno) que ocurrieron bajo
+// alguna fase (si no hay fase que los cubra, no hay meta con la que
+// compararlos).
 function streakEligibleFasts() {
-  return completedFasts().filter((f) => f.goal != null);
+  return expandedFasts().filter((f) => f.goal != null);
 }
 
 function currentStreak() {
@@ -364,6 +412,18 @@ function bestStreak() {
     else running = 0;
   });
   return best;
+}
+
+function linearRegression(points) {
+  const n = points.length;
+  if (n < 2) return null;
+  let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+  points.forEach((p) => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumXX += p.x * p.x; });
+  const denom = n * sumXX - sumX * sumX;
+  if (denom === 0) return null;
+  const slope = (n * sumXY - sumX * sumY) / denom;
+  const intercept = (sumY - slope * sumX) / n;
+  return { slope, intercept };
 }
 // Método Navy: estima % de grasa corporal a partir de circunferencias
 // (cuello, cintura, y cadera solo para la fórmula de mujer) + altura y
@@ -1037,23 +1097,29 @@ function bodyFatSection() {
     return `<div class="card"><div class="card-title">% de grasa corporal</div>
       <p class="helper" style="margin:0">Registra cuello y cintura${needsHip ? " y cadera" : ""} juntos (en «⚖️ Peso/cintura») para calcularlo.</p></div>`;
   }
-  return chartCard("% de grasa corporal (método Navy) — línea fina = dato, gruesa = promedio", "c-bodyfat");
+  const bands = BODY_FAT_BANDS[settings.sex] || [];
+  return chartCard("% de grasa corporal (método Navy) — línea fina = dato, gruesa = promedio", "c-bodyfat", bandsLegend(bands, "% de grasa corporal — referencia ACE, no diagnóstico médico.", "%"));
 }
 function chartCard(title, id, footer) {
   return `<div class="card"><div class="card-title">${title}</div><div class="chart-box"><canvas id="${id}"></canvas></div>${footer || ""}</div>`;
 }
-function ketoneLegend() {
-  const items = KETONE_BANDS.map((b) => {
+// Leyenda genérica de bandas de fondo, reutilizada por cetonas y grasa
+// corporal (mismo patrón visual: cuadrito de color + rango + nota al pie).
+function bandsLegend(bands, note, unit) {
+  const items = bands.map((b) => {
     const range = b.max === Infinity ? `&gt; ${b.min}` : (b.min === 0 ? `&lt; ${b.max}` : `${b.min}–${b.max}`);
     return `<div style="display:flex;align-items:center;gap:6px;font-size:11px">
       <span style="width:10px;height:10px;border-radius:3px;background:${b.color};flex-shrink:0"></span>
-      <span style="color:var(--muted)"><b style="color:var(--text)">${esc(b.label)}</b> ${range} mmol/L</span>
+      <span style="color:var(--muted)"><b style="color:var(--text)">${esc(b.label)}</b> ${range} ${unit}</span>
     </div>`;
   }).join("");
   return `<div style="display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
     ${items}
-    <p class="helper" style="margin:6px 0 0">Referencia general para ayuno prolongado sin diabetes, no es diagnóstico médico. A partir de ${KETONE_WATCH_THRESHOLD} mmol/L, prioriza los síntomas sobre el número — ver abajo.</p>
+    ${note ? `<p class="helper" style="margin:6px 0 0">${note}</p>` : ""}
   </div>`;
+}
+function ketoneLegend() {
+  return bandsLegend(KETONE_BANDS, `Referencia general para ayuno prolongado sin diabetes, no es diagnóstico médico. A partir de ${KETONE_WATCH_THRESHOLD} mmol/L, prioriza los síntomas sobre el número — ver abajo.`, "mmol/L");
 }
 function ketoneSymptomsWarning() {
   const last = [...data.ketones].sort((a, b) => new Date(b.ts) - new Date(a.ts))[0];
@@ -1066,29 +1132,33 @@ function ketoneSymptomsWarning() {
   </div>`;
 }
 
-// Pinta las bandas de KETONE_BANDS detrás de la línea de cetonas. Plugin
-// local (se pasa solo a ese chart vía `plugins: [ketoneBandsPlugin]`, no se
-// registra globalmente) para no depender de una librería extra por CDN.
-const ketoneBandsPlugin = {
-  id: "ketoneBands",
-  beforeDatasetsDraw(chart) {
-    const { ctx, chartArea, scales } = chart;
-    if (!chartArea) return;
-    const y = scales.y;
-    const clamp = (v) => Math.max(y.min, Math.min(y.max, v));
-    ctx.save();
-    KETONE_BANDS.forEach((b) => {
-      const topVal = clamp(b.max === Infinity ? y.max : b.max);
-      const botVal = clamp(b.min);
-      const yTop = y.getPixelForValue(topVal);
-      const yBottom = y.getPixelForValue(botVal);
-      if (yBottom <= yTop) return; // banda fuera del rango visible
-      ctx.fillStyle = b.color + "26";
-      ctx.fillRect(chartArea.left, yTop, chartArea.right - chartArea.left, yBottom - yTop);
-    });
-    ctx.restore();
-  },
-};
+// Pinta bandas de fondo detrás de una línea (cetonas, grasa corporal — mismas
+// bandas que su leyenda vía bandsLegend). Factory en vez de un plugin fijo
+// para reusar el mismo dibujo con distintos rangos; se pasa por chart vía
+// `plugins: [bandsPlugin(...)]`, no se registra globalmente, para no
+// depender de una librería extra por CDN.
+function bandsPlugin(bands) {
+  return {
+    id: "bands-" + Math.random().toString(36).slice(2),
+    beforeDatasetsDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea) return;
+      const y = scales.y;
+      const clamp = (v) => Math.max(y.min, Math.min(y.max, v));
+      ctx.save();
+      bands.forEach((b) => {
+        const topVal = clamp(b.max === Infinity ? y.max : b.max);
+        const botVal = clamp(b.min);
+        const yTop = y.getPixelForValue(topVal);
+        const yBottom = y.getPixelForValue(botVal);
+        if (yBottom <= yTop) return; // banda fuera del rango visible
+        ctx.fillStyle = b.color + "26";
+        ctx.fillRect(chartArea.left, yTop, chartArea.right - chartArea.left, yBottom - yTop);
+      });
+      ctx.restore();
+    },
+  };
+}
 
 function drawCharts() {
   const gridColor = "#2B3040", tickColor = "#8A8FA3";
@@ -1101,10 +1171,12 @@ function drawCharts() {
     },
   });
 
-  // horas por ayuno (barras, coloreadas por protocolo) + línea de meta
+  // horas por ayuno (barras, coloreadas por protocolo) + línea de meta.
+  // expandedFasts(), no completedFasts(): un ayuno de 48h son 2 barras de
+  // 24h, no 1 barra de 48h — ver expandFastForStreaks().
   const fEl = document.getElementById("c-fasts");
   if (fEl) {
-    const fasts = completedFasts();
+    const fasts = expandedFasts();
     const labels = fasts.map((f) => fmtDate(f.end));
     charts.push(new Chart(fEl, {
       type: "bar",
@@ -1179,6 +1251,13 @@ function drawCharts() {
       .filter((p) => p.bf != null)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     const withAvg = movingAverage(base, "bf", 7);
+    const bfOpts = baseOpts(null, "%");
+    const bfBands = BODY_FAT_BANDS[settings.sex] || [];
+    if (bfBands.length) {
+      const vals = withAvg.flatMap((p) => [p.bf, p.avg]).filter((v) => v != null);
+      bfOpts.scales.y.suggestedMin = Math.max(0, Math.min(...vals) - 5);
+      bfOpts.scales.y.suggestedMax = Math.max(...vals) + 5;
+    }
     charts.push(new Chart(bfEl, {
       type: "line",
       data: {
@@ -1188,7 +1267,8 @@ function drawCharts() {
           { data: withAvg.map((p) => p.avg), borderColor: "#B25B8F", borderWidth: 2.5, pointRadius: 0, tension: 0.3 },
         ],
       },
-      options: baseOpts(null, "%"),
+      options: bfOpts,
+      plugins: bfBands.length ? [bandsPlugin(bfBands)] : [],
     }));
   }
   // ketones — con bandas de fondo de KETONE_BANDS para dar contexto de interpretación
@@ -1202,18 +1282,29 @@ function drawCharts() {
       type: "line",
       data: { labels: base.map((k) => fmtDateTime(k.ts)), datasets: [{ data: base.map((k) => k.value), borderColor: "#E8A33D", borderWidth: 2.5, pointRadius: 3, tension: 0.3 }] },
       options: ketOpts,
-      plugins: [ketoneBandsPlugin],
+      plugins: [bandsPlugin(KETONE_BANDS)],
     }));
   }
-  // corr ketones vs fast
+  // corr ketones vs horas del ayuno actual (hoursFastedBefore: horas desde
+  // la última comida hasta esa medición) + línea de regresión lineal. No es
+  // un acumulado entre ayunos: las cetonas se resetean fisiológicamente con
+  // cada comida, así que lo que importa es cuánto llevas SIN comer en ese
+  // momento, no una racha de días previos.
   const ckEl = document.getElementById("c-corr-ket");
   if (ckEl) {
     const pts = data.ketones.map((k) => ({ x: hoursFastedBefore(k.ts), y: k.value })).filter((p) => p.x != null);
-    charts.push(new Chart(ckEl, {
-      type: "scatter",
-      data: { datasets: [{ data: pts, backgroundColor: "#E8A33D" }] },
-      options: baseOpts("horas de ayuno", "cetonas mmol/L"),
-    }));
+    const reg = linearRegression(pts);
+    const datasets = [{ type: "scatter", data: pts, backgroundColor: "#E8A33D" }];
+    if (reg) {
+      const xs = pts.map((p) => p.x);
+      const minX = Math.min(...xs), maxX = Math.max(...xs);
+      datasets.push({
+        type: "line",
+        data: [{ x: minX, y: reg.slope * minX + reg.intercept }, { x: maxX, y: reg.slope * maxX + reg.intercept }],
+        borderColor: "#8A8FA3", borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0, showLine: true,
+      });
+    }
+    charts.push(new Chart(ckEl, { type: "scatter", data: { datasets }, options: baseOpts("horas de ayuno", "cetonas mmol/L") }));
   }
   // cambio entre mediciones del promedio móvil de peso: ya viene filtrado de
   // ruido (se construye sobre el promedio de 7, no el dato crudo) y muestra
@@ -1255,7 +1346,7 @@ function drawCharts() {
 function viewFases() {
   const phases = [...data.phases].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
   const ascPhases = [...data.phases].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-  const allFasts = completedFasts();
+  const allFasts = expandedFasts(); // días de ayuno, no ayunos crudos — ver expandFastForStreaks()
   const timeline = phases.length
     ? phases.map((p) => {
         const idx = ascPhases.findIndex((x) => x.id === p.id);
@@ -1266,8 +1357,7 @@ function viewFases() {
           const t = new Date(f.end);
           return t >= new Date(p.startDate) && (!next || t < new Date(next.startDate));
         });
-        const goal = PROTOCOL_GOAL_HOURS[p.protocol];
-        const fulfilled = inPhase.filter((f) => goal != null && f.hours >= goal).length;
+        const fulfilled = inPhase.filter((f) => f.goal != null && f.hours >= f.goal).length;
         const metaTxt = inPhase.length ? ` · ${fulfilled}/${inPhase.length} cumplieron la meta` : "";
         const known = PROTOCOL_OPTIONS.includes(p.protocol);
         const label = known ? esc(p.protocol) : `⚠️ protocolo no reconocido`;
