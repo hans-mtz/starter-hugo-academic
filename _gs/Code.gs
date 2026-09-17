@@ -132,7 +132,8 @@ function writeAll(payload) {
   dsh.clear();
   var rows = [["id", "tipo", "fecha_hora", "valor1", "valor2", "valor3", "valor4", "nota"]];
   (payload.meals || []).forEach(function (m) {
-    rows.push([m.id || "", "comida", m.ts, "", "", "", "", m.note || ""]);
+    var tipo = (m.type === "start") ? "ayuno_inicio" : "comida";
+    rows.push([m.id || "", tipo, m.ts, "", "", "", "", m.note || ""]);
   });
   (payload.measurements || []).forEach(function (m) {
     rows.push([
@@ -220,7 +221,9 @@ function readAll() {
     id = String(id);
 
     if (tipo === "comida") {
-      out.meals.push({ id: id, ts: fechaStr, note: nota ? String(nota) : "" });
+      out.meals.push({ id: id, ts: fechaStr, type: "end", note: nota ? String(nota) : "" });
+    } else if (tipo === "ayuno_inicio") {
+      out.meals.push({ id: id, ts: fechaStr, type: "start" });
     } else if (tipo === "medicion") {
       out.measurements.push({
         id: id, date: fechaDay,

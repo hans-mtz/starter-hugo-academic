@@ -288,7 +288,7 @@ let data = null;
 let activeTab = "hoy";
 let syncState = "connecting"; // connecting | synced | offline
 let canSave = false;
-let openForm = null; // 'meal' | 'measure' | 'ketone' | 'phase'
+let openForm = null; // 'start' | 'end' | 'measure' | 'ketone' | 'phase'
 let saveTimer = null;
 let charts = [];
 
@@ -317,15 +317,22 @@ function inferProtocol(h) {
   if (h < 60) return "24–48h";
   return "Ayuno de agua";
 }
+// "meals" ahora mezcla dos tipos de evento: 'start' (empezaste a ayunar,
+// explícito) y 'end' (comiste / rompiste el ayuno). Los datos viejos no
+// tienen `type` — se tratan como 'end' (así funcionaban antes: cada comida
+// cerraba el hueco anterior), ver "Empezar/Terminar ayuno" en el CLAUDE.md
+// de esta carpeta para el razonamiento completo.
 function currentFastHours() {
   if (!data.meals.length) return null;
   const last = [...data.meals].sort((a, b) => new Date(b.ts) - new Date(a.ts))[0];
+  if ((last.type || "end") !== "start") return null; // en ventana de alimentación: no cuenta
   return hoursBetween(last.ts, new Date());
 }
 function hoursFastedBefore(ts) {
   const before = data.meals.filter((m) => new Date(m.ts) < new Date(ts));
   if (!before.length) return null;
   const last = before.sort((a, b) => new Date(b.ts) - new Date(a.ts))[0];
+  if ((last.type || "end") !== "start") return null; // no estabas ayunando en ese momento
   return hoursBetween(last.ts, ts);
 }
 
@@ -355,6 +362,12 @@ function completedFasts() {
   const sorted = [...data.meals].sort((a, b) => new Date(a.ts) - new Date(b.ts));
   const out = [];
   for (let i = 1; i < sorted.length; i++) {
+    if ((sorted[i].type || "end") === "start") continue; // un 'start' abre un ayuno, no cierra uno
+    // El evento inmediatamente anterior es siempre el inicio correcto de este
+    // ayuno: si es un 'start' explícito, es exactamente el que se está
+    // cerrando; si es un 'end' (o dato viejo sin `type`), no hubo ningún
+    // 'start' de por medio (si lo hubiera, sería el evento anterior, no
+    // este) — mismo fallback "hueco entre comidas" que usaba la app antes.
     const hours = hoursBetween(sorted[i - 1].ts, sorted[i].ts);
     const phase = phaseAt(sorted[i].ts);
     out.push({ end: sorted[i].ts, hours, protocol: inferProtocol(hours), phase, goal: goalForPhase(phase) });
@@ -425,21 +438,34 @@ function linearRegression(points) {
   const intercept = (sumY - slope * sumX) / n;
   return { slope, intercept };
 }
+// El cuello cambia muy poco medición a medición, así que no se pide en cada
+// registro: si esta medición no trae cuello propio, se reutiliza el último
+// valor de cuello conocido a esa fecha o antes (carry-forward). Solo si
+// nunca se ha registrado cuello (ni en esta medición ni en ninguna previa)
+// devuelve null.
+function effectiveNeck(m) {
+  if (m.neck != null) return m.neck;
+  const prior = data.measurements
+    .filter((x) => x.neck != null && new Date(x.date) <= new Date(m.date))
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  return prior.length ? prior[0].neck : null;
+}
 // Método Navy: estima % de grasa corporal a partir de circunferencias
 // (cuello, cintura, y cadera solo para la fórmula de mujer) + altura y
 // sexo. Requiere settings.heightCm/settings.sex (ver "Datos personales" en
 // Registro) además de los campos opcionales de la medición.
 function bodyFatPercent(m) {
   if (!settings || !settings.heightCm || !settings.sex) return null;
-  if (m.waist == null || m.neck == null) return null;
+  const neck = effectiveNeck(m);
+  if (m.waist == null || neck == null) return null;
   const h = settings.heightCm;
   if (settings.sex === "M") {
-    const denom = m.waist - m.neck;
+    const denom = m.waist - neck;
     if (denom <= 0) return null;
     return 495 / (1.0324 - 0.19077 * Math.log10(denom) + 0.15456 * Math.log10(h)) - 450;
   }
   if (m.hip == null) return null;
-  const denom = m.waist + m.hip - m.neck;
+  const denom = m.waist + m.hip - neck;
   if (denom <= 0) return null;
   return 495 / (1.29579 - 0.35004 * Math.log10(denom) + 0.22100 * Math.log10(h)) - 450;
 }
@@ -680,7 +706,8 @@ function scheduleSave() {
 // ---------- mutations ----------
 function commit(msg) { scheduleSave(); render(); if (msg) toast(msg); }
 
-function addMeal(ts, note) { data.meals.push({ id: uid(), ts, note }); openForm = null; commit("Comida registrada"); }
+function addFastStart(ts) { data.meals.push({ id: uid(), ts, type: "start" }); openForm = null; commit("Ayuno iniciado"); }
+function addFastEnd(ts, note) { data.meals.push({ id: uid(), ts, type: "end", note }); openForm = null; commit("Ayuno terminado"); }
 function delMeal(id) { data.meals = data.meals.filter((m) => m.id !== id); commit(); }
 function addMeasurement(date, weight, waist, neck, hip) {
   data.measurements = data.measurements.filter((m) => m.date !== date);
@@ -702,7 +729,7 @@ function delPhase(id) { data.phases = data.phases.filter((p) => p.id !== id); co
 function buildJSON() { return JSON.stringify(data, null, 2); }
 function buildRows() {
   const rows = [["tipo", "fecha_hora", "valor1", "valor2", "nota"]];
-  data.meals.forEach((m) => rows.push(["comida", m.ts, "", "", m.note || ""]));
+  data.meals.forEach((m) => rows.push([m.type === "start" ? "ayuno_inicio" : "comida", m.ts, "", "", m.note || ""]));
   data.measurements.forEach((m) => rows.push(["medicion", m.date, m.weight ?? "", m.waist ?? "", ""]));
   data.ketones.forEach((k) => rows.push(["cetonas", k.ts, k.value, "", ""]));
   data.phases.forEach((p) => rows.push(["fase", p.startDate, p.protocol, "", p.note || ""]));
@@ -800,16 +827,17 @@ function renderMain() {
 // ----- HOY -----
 function viewHoy() {
   const fh = currentFastHours();
-  const proto = inferProtocol(fh);
-  const lastMeal = data.meals.length ? [...data.meals].sort((a, b) => new Date(b.ts) - new Date(a.ts))[0] : null;
+  const fasting = fh != null;
+  const proto = fasting ? inferProtocol(fh) : null;
+  const lastEvent = data.meals.length ? [...data.meals].sort((a, b) => new Date(b.ts) - new Date(a.ts))[0] : null;
   const currentPhase = data.phases.length ? [...data.phases].sort((a, b) => new Date(b.startDate) - new Date(a.startDate))[0].protocol : null;
 
   const size = 220, r = 92, cx = size / 2, cy = size / 2;
-  const capped = fh != null ? Math.min(fh, 24) : 0;
+  const capped = fasting ? Math.min(fh, 24) : 0;
   const circ = 2 * Math.PI * r;
   const dash = circ * (capped / 24);
-  const laps = fh != null ? Math.floor(fh / 24) : 0;
-  const clockLabel = laps > 0 ? `vuelta ${laps + 1} · ${proto}` : proto;
+  const laps = fasting ? Math.floor(fh / 24) : 0;
+  const clockLabel = fasting ? (laps > 0 ? `vuelta ${laps + 1} · ${proto}` : proto) : "en ventana de alimentación";
 
   const clock = `
     <div class="clock-wrap">
@@ -817,15 +845,15 @@ function viewHoy() {
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="10"/>
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--amber)" stroke-width="10"
           stroke-linecap="round" stroke-dasharray="${dash} ${circ}" transform="rotate(-90 ${cx} ${cy})"/>
-        <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="var(--text)" font-family="var(--display)" font-size="30" font-weight="600">${fh != null ? Math.floor(fh) : 0}h</text>
+        <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="var(--text)" font-family="var(--display)" font-size="30" font-weight="600">${fasting ? Math.floor(fh) : 0}h</text>
         <text x="${cx}" y="${cy + 20}" text-anchor="middle" fill="var(--muted)" font-family="var(--body)" font-size="12">${clockLabel}</text>
       </svg>
     </div>`;
 
-  const mins = fh != null ? Math.round((fh - Math.floor(fh)) * 60) : null;
-  const bigLabel = fh != null
-    ? `${Math.floor(fh)}h ${mins}m en ayuno · desde ${fmtDateTime(lastMeal.ts)}`
-    : "registra tu primera comida para empezar";
+  const mins = fasting ? Math.round((fh - Math.floor(fh)) * 60) : null;
+  const bigLabel = fasting
+    ? `${Math.floor(fh)}h ${mins}m en ayuno · desde ${fmtDateTime(lastEvent.ts)}`
+    : (lastEvent ? `en ventana de alimentación · terminaste tu último ayuno ${fmtDateTime(lastEvent.ts)}` : "toca «Empezar ayuno» para arrancar el contador");
   const phasePill = currentPhase
     ? `<div style="text-align:center"><span class="pill" style="background:${(PROTOCOL_COLOR[currentPhase] || "#4FA8A0")}22;color:${PROTOCOL_COLOR[currentPhase] || "#4FA8A0"}">protocolo actual: ${esc(currentPhase)}</span></div>`
     : "";
@@ -836,11 +864,14 @@ function viewHoy() {
     ${phasePill}
     ${streakCard()}
     <div class="actions">
-      <button class="act primary" onclick="openForm='meal';render()">🍽 Comí ahora</button>
+      ${fasting
+        ? `<button class="act primary" onclick="openForm='end';render()">🍽 Terminé el ayuno</button>`
+        : `<button class="act primary" onclick="openForm='start';render()">▶️ Empezar ayuno</button>`}
       <button class="act ghost" onclick="openForm='measure';render()">⚖️ Peso/cintura</button>
       <button class="act ghost" onclick="openForm='ketone';render()">💧 Cetonas</button>
     </div>
-    ${openForm === "meal" ? formMeal() : ""}
+    ${openForm === "start" ? formFastStart() : ""}
+    ${openForm === "end" ? formFastEnd() : ""}
     ${openForm === "measure" ? formMeasure() : ""}
     ${openForm === "ketone" ? formKetone() : ""}
     ${recentList()}
@@ -908,6 +939,10 @@ function recentList() {
   if (!ev.length) return "";
   const rows = ev.map((e) => {
     let ico = "🍽", main = "Comida";
+    if (e.kind === "meal") {
+      if (e.type === "start") { ico = "▶️"; main = "Empezaste a ayunar"; }
+      else { ico = "🍽"; main = "Comida" + (e.note ? " · " + e.note : ""); }
+    }
     if (e.kind === "ketone") { ico = "💧"; main = `Cetonas · ${e.value} mmol/L`; }
     if (e.kind === "measure") { ico = "⚖️"; main = `${e.weight ? e.weight + " kg" : ""}${e.weight && e.waist ? " · " : ""}${e.waist ? e.waist + " cm" : ""}`; }
     const sub = e.kind === "measure" ? fmtDate(e.when) : fmtDateTime(e.when);
@@ -924,21 +959,33 @@ function formShell(title, inner) {
     ${inner}
   </div>`;
 }
-function formMeal() {
-  return formShell("Registrar comida", `
-    <label>Hora en que comiste</label>
-    <input type="datetime-local" id="meal-ts" value="${nowLocalInputValue()}"/>
-    <label>Nota (opcional)</label>
-    <input type="text" id="meal-note" placeholder="ej. salmón, brócoli y yogur griego"/>
-    <button class="save" onclick="submitMeal()">Guardar</button>`);
+function formFastStart() {
+  return formShell("Empezar ayuno", `
+    <label>Hora en que empezaste a ayunar</label>
+    <input type="datetime-local" id="fs-ts" value="${nowLocalInputValue()}"/>
+    <button class="save" onclick="submitFastStart()">Guardar</button>`);
 }
-function submitMeal() {
-  const ts = document.getElementById("meal-ts").value;
-  const note = document.getElementById("meal-note").value;
+function submitFastStart() {
+  const ts = document.getElementById("fs-ts").value;
   if (!ts) return;
-  addMeal(new Date(ts).toISOString(), note);
+  addFastStart(new Date(ts).toISOString());
+}
+function formFastEnd() {
+  return formShell("Terminé el ayuno", `
+    <label>Hora en que comiste</label>
+    <input type="datetime-local" id="fe-ts" value="${nowLocalInputValue()}"/>
+    <label>Nota (opcional)</label>
+    <input type="text" id="fe-note" placeholder="ej. salmón, brócoli y yogur griego"/>
+    <button class="save" onclick="submitFastEnd()">Guardar</button>`);
+}
+function submitFastEnd() {
+  const ts = document.getElementById("fe-ts").value;
+  const note = document.getElementById("fe-note").value;
+  if (!ts) return;
+  addFastEnd(new Date(ts).toISOString(), note);
 }
 function formMeasure() {
+  const needsHip = settings && settings.sex === "F";
   return formShell("Peso y cintura", `
     <label>Fecha</label>
     <input type="date" id="me-date" value="${new Date().toISOString().slice(0,10)}"/>
@@ -946,10 +993,11 @@ function formMeasure() {
     <input type="number" inputmode="decimal" step="0.1" id="me-weight" placeholder="ej. 78.4"/>
     <label>Cintura (cm) — opcional, ideal 1x/semana</label>
     <input type="number" inputmode="decimal" step="0.1" id="me-waist" placeholder="ej. 89"/>
-    <label>Cuello (cm) — opcional, para % de grasa corporal</label>
+    <label>Cuello (cm) — opcional, solo si cambió desde tu última medición</label>
     <input type="number" inputmode="decimal" step="0.1" id="me-neck" placeholder="ej. 38"/>
-    <label>Cadera (cm) — opcional, solo si usas la fórmula de mujer</label>
-    <input type="number" inputmode="decimal" step="0.1" id="me-hip" placeholder="ej. 95"/>
+    ${needsHip ? `
+    <label>Cadera (cm) — opcional, para % de grasa corporal</label>
+    <input type="number" inputmode="decimal" step="0.1" id="me-hip" placeholder="ej. 95"/>` : ""}
     <button class="save" onclick="submitMeasure()">Guardar</button>`);
 }
 function submitMeasure() {
@@ -957,7 +1005,8 @@ function submitMeasure() {
   const w = document.getElementById("me-weight").value;
   const waist = document.getElementById("me-waist").value;
   const neck = document.getElementById("me-neck").value;
-  const hip = document.getElementById("me-hip").value;
+  const hipEl = document.getElementById("me-hip");
+  const hip = hipEl ? hipEl.value : "";
   if (!date || (!w && !waist && !neck && !hip)) { toast("Ingresa al menos un dato"); return; }
   addMeasurement(
     date,
@@ -989,7 +1038,10 @@ function viewRegistro() {
   const ketones = [...data.ketones].sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
   const mealRows = meals.map((m, i) => {
-    const prev = meals[i + 1];
+    if ((m.type || "end") === "start") {
+      return rowItem("▶️", "Empezaste a ayunar", fmtDateTime(m.ts), `delMeal('${m.id}')`);
+    }
+    const prev = meals[i + 1]; // lista descendente: el evento inmediatamente anterior en el tiempo
     const fasted = prev ? hoursBetween(prev.ts, m.ts) : null;
     return rowItem("🍽", fmtDateTime(m.ts) + (m.note ? " · " + esc(m.note) : ""),
       fasted != null ? `ayunaste ${fasted.toFixed(1)}h antes` : "—", `delMeal('${m.id}')`);
@@ -1016,7 +1068,7 @@ function viewRegistro() {
       <button class="exp" onclick="openExport('json')">⬇ JSON</button>
     </div>
     ${syncCard()}
-    ${sectionCard("Comidas", mealRows)}
+    ${sectionCard("Ayunos", mealRows)}
     ${sectionCard("Peso y cintura", meRows)}
     ${sectionCard("Cetonas", keRows)}
   </div>`;
@@ -1095,7 +1147,7 @@ function bodyFatSection() {
   if (!hasBF) {
     const needsHip = settings.sex === "F";
     return `<div class="card"><div class="card-title">% de grasa corporal</div>
-      <p class="helper" style="margin:0">Registra cuello y cintura${needsHip ? " y cadera" : ""} juntos (en «⚖️ Peso/cintura») para calcularlo.</p></div>`;
+      <p class="helper" style="margin:0">Registra cuello y cintura${needsHip ? " y cadera" : ""} juntos una vez (en «⚖️ Peso/cintura») para calcularlo — el cuello se reutiliza en mediciones futuras mientras no cambie.</p></div>`;
   }
   const bands = BODY_FAT_BANDS[settings.sex] || [];
   return chartCard("% de grasa corporal (método Navy) — línea fina = dato, gruesa = promedio", "c-bodyfat", bandsLegend(bands, "% de grasa corporal — referencia ACE, no diagnóstico médico.", "%"));
@@ -1254,9 +1306,18 @@ function drawCharts() {
     const bfOpts = baseOpts(null, "%");
     const bfBands = BODY_FAT_BANDS[settings.sex] || [];
     if (bfBands.length) {
+      // Margen chico y proporcional a la variación real de los datos (no un
+      // ±5 fijo): el % de grasa corporal cambia lento, así que un margen
+      // grande deja la línea casi plana dentro de mucho espacio vacío y las
+      // bandas de zona (p.ej. "Obesidad") ocupan la mayor parte del alto
+      // aunque no haya ni un dato ahí — el cambio real se ve aplastado. Con
+      // margen ajustado a los datos, solo aparece la porción de cada zona
+      // cercana a lo que realmente se ha medido.
       const vals = withAvg.flatMap((p) => [p.bf, p.avg]).filter((v) => v != null);
-      bfOpts.scales.y.suggestedMin = Math.max(0, Math.min(...vals) - 5);
-      bfOpts.scales.y.suggestedMax = Math.max(...vals) + 5;
+      const lo = Math.min(...vals), hi = Math.max(...vals);
+      const pad = Math.max(0.5, (hi - lo) * 0.25);
+      bfOpts.scales.y.suggestedMin = Math.max(0, lo - pad);
+      bfOpts.scales.y.suggestedMax = hi + pad;
     }
     charts.push(new Chart(bfEl, {
       type: "line",
