@@ -6,7 +6,7 @@ author_notes:
 authors:
 - Javier Martinez Hernandez
 - admin
-date: "2025-06-25"
+date: "2026-06-25"
 doi: 
 featured: true
 image:
@@ -18,7 +18,7 @@ publication: Global Risk Institute
 publication_short: 
 publication_types:
 - "4"
-publishDate: "2026-06-25"
+publishDate: "2026-06-25T00:00:00Z"
 slides: 
 summary: 
 tags: ['Rare Earth Elements', 'Market Power','Supply Disruptions', 'Geopolitical Risk']
