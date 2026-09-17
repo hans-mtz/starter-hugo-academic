@@ -10,14 +10,14 @@ date: "2025-06-25"
 doi: 
 featured: true
 image:
-  caption: Martinez-Torres, H. & Martinez Hernandez, J., 2026
+  caption: Martinez Hernandez, J. & Martinez-Torres, H., 2026
   focal_point: ""
   preview_only: false
 projects:
 publication: Global Risk Institute
 publication_short: 
 publication_types:
-- "2"
+- "4"
 publishDate: "2026-06-25"
 slides: 
 summary: 
