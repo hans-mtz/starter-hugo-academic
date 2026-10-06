@@ -25,9 +25,9 @@ social:
 - icon: envelope
   icon_pack: fas
   link: mailto:<hmarti33@uwo.ca>
-- icon: twitter
-  icon_pack: fab
-  link: https://twitter.com/Hans_Mtz
+# - icon: x-twitter
+#   icon_pack: fab
+#   link: https://twitter.com/Hans_Mtz
 - icon: linkedin
   icon_pack: fab
   link: https://www.linkedin.com/in/hansmartinez
@@ -54,4 +54,4 @@ I am currently a Ph.D. candidate in economics at Western University.
 
 <!-- Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html) -->
 
-Download my CV: {{< staticref "uploads/HansMartinezCV.pdf" "newtab" >}}resumé.{{< /staticref >}}
+Download my CV {{< staticref "uploads/HansMartinezCV.pdf" "newtab" >}}here.{{< /staticref >}}

@@ -45,18 +45,18 @@ content:
   #   - 'Wednesday 09:00 to 10:00'
   # appointment_url: 'https://calendly.com'
   contact_links:
-    - icon: twitter
-      icon_pack: fab
-      name: DM Me
-      link: 'https://twitter.com/Twitter'
+    # - icon: twitter
+    #   icon_pack: fab
+    #   name: DM Me
+    #   link: 'https://twitter.com/Twitter'
     - icon: linkedin
       icon_pack: fab
       name: Message Me
       link: 'https://www.linkedin.com/in/hansmartinez'
-    - icon: video
-      icon_pack: fas
-      name: Zoom Me
-      link: 'https://zoom.com'
+    # - icon: video
+    #   icon_pack: fas
+    #   name: Zoom Me
+    #   link: 'https://zoom.com'
 
 design:
   columns: '2'

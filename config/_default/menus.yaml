@@ -13,15 +13,18 @@ main:
   - name: Teaching
     url: /teaching/
     weight: 30
-  - name: CV
-    url: https://raw.githack.com/hans-mtz/DataCV/master/cv.html
+  - name: Resources
+    url: /resources/
     weight: 40
-  - name: Brown Bag Student Seminar
-    url: /brown_bag/
+  - name: CV
+    url: /static/uploads/HansMartinezCV.pdf
     weight: 50
   - name: Contact
     url: /contact/
     weight: 60
+  # - name: Brown Bag Student Seminar
+  #   url: /brown_bag/
+  #   weight: 50
 
 # Link to a PDF of your resume/CV from the menu.
 # To enable, copy your resume/CV to `static/uploads/resume.pdf` and uncomment the lines below.

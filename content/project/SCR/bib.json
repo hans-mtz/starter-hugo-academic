@@ -3,13 +3,13 @@
 		"id": "AK2020",
 		"type": "article-journal",
 		"abstract": "A long-standing question about consumer behavior is whether individuals’ observed purchase decisions satisfy the revealed preference (RP) axioms of the utility maximization theory (UMT). Researchers using survey or experimental panel data sets on prices and consumption to answer this question face the well-known problem of measurement error. We show that ignoring measurement error in the RP approach may lead to overrejection of the UMT. To solve this problem, this paper proposes a new statistical RP framework for consumption panel data sets that allows for testing the UMT in the presence of measurement error. Our test is applicable to all consumer models that can be characterized by their first-order conditions. Our approach is nonparametric, allows for unrestricted heterogeneity in preferences, and requires only a centering condition on measurement error. We develop two applications that provide new evidence about the UMT. First, we find support in a survey dataset for the dynamic and time-consistent UMT in single-individual households, in the presence of nonclassical measurement error in consumption. In the second application, we cannot reject the static UMT in a widely used experimental dataset where measurement error in prices is assumed to be the result of price misperception due to the experimental design. The first finding stands in contrast to the conclusions drawn from the deterministic RP test of Browning (1989). The second finding reverses the conclusions drawn from the deterministic RP test of Afriat (1967) and Varian (1982).",
-		"container-title": "Review of Economic Studies",
+		"container-title": "The Review of Economic Studies",
 		"DOI": "10.1093/restud/rdaa067",
 		"ISSN": "23318422",
 		"note": "publisher: arXiv",
-		"page": "1-52",
-		"title": "Stochastic revealed preferences with measurement error",
-		"volume": "0",
+		"page": "2042-2093",
+		"title": "Stochastic Revealed Preferences with Measurement Error",
+		"volume": "88",
 		"author": [
 			{
 				"family": "Aguiar",
@@ -23,12 +23,11 @@
 		"issued": {
 			"date-parts": [
 				[
-					"2020",
-					10,
-					11
+					"2021"
 				]
 			]
-		}
+		},
+		"issue": "4"
 	},
 	{
 		"id": "Nevo2001",
@@ -1067,6 +1066,29 @@
 					"2022",
 					3,
 					1
+				]
+			]
+		}
+	},
+	{
+		"id": "Afriat1967",
+		"type": "article-journal",
+		"container-title": "International Economic Review",
+		"DOI": "10.2307/2525382",
+		"issue": "1",
+		"page": "67-77",
+		"title": "The Construction of Utility Functions from Expenditure Data",
+		"volume": "8",
+		"author": [
+			{
+				"family": "Afriat",
+				"given": "S. N."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1967"
 				]
 			]
 		}
