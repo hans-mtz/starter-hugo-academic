@@ -17,7 +17,7 @@ main:
     url: /resources/
     weight: 40
   - name: CV
-    url: /static/uploads/HansMartinezCV.pdf
+    url: /uploads/HansMartinezCV.pdf
     weight: 50
   - name: Contact
     url: /contact/
