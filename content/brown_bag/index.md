@@ -1,5 +1,5 @@
 ---
-title: Browng Bag Student Seminar
+title: Brown Bag Student Seminar
 subtitle: Economics Department, Western University
 author: admin
 date: "2023-04-08"
@@ -9,17 +9,17 @@ format: hugo-md
 
 ## Introduction
 
-Hans Martinez, Evan Sauve, and Tyler Skura started the Brown Bag Student Seminar at the Economics Department of Western University during the 2023 winter term. The seminar provides a forum for Ph.D. students of any year to present research in progress or research ideas in an informal and casual environment. Students receive feedback and suggestions to improve their work.
+Hans Martinez, Evan Sauve, and Tyler Skura started the Brown Bag Student Seminar in the Department of Economics at Western University during the 2023 winter term. The seminar provides a forum for Ph.D. students of any year to present research in progress or research ideas in an informal and casual environment. Students receive feedback and suggestions to improve their work.
 
 ## Format and objectives
 
-The seminar consists of short presentations 20-30 minutes long, followed by 10-15 min of questions and feedback. The meetings have place every Thursday from 12-1 p.m.
+The seminar consists of short presentations lasting 20–30 minutes, followed by 10–15 minutes of questions and feedback. The meetings take place every Thursday from 12–1 p.m.
 
 The seminar prioritizes providing content feedback on original work in progress or early research ideas and a safe environment to present new ideas and ask naïve questions.
 
 ## Additional info
 
-Currently, the seminar is open to only Western students, but it is likely to be open to any Economics Ph.D. student shortly. To participate [contact me](mailto:%3Chmarti33@uwo.ca%3E). The current schedule is listed below.
+Currently, the seminar is open only to Western students, but it is likely to be open to any Economics Ph.D. student shortly. To participate [contact me](mailto:%3Chmarti33@uwo.ca%3E). The current schedule is listed below.
 
 <table>
  <thead>

@@ -13,10 +13,10 @@ email: "hmarti33@uwo.ca"
 highlight_name: true
 interests:
 - Industrial Organization
-- Public Economics
+- Applied Microeconomics
 - Productivity
 - Market Power
-- Applied Microeconomics
+- Public Economics
 organizations:
 - name: Western University
   url: https://economics.uwo.ca
@@ -44,10 +44,14 @@ superuser: true
 title: Hans Martinez
 ---
 
-I'm an Applied Micro-economist. I am passionate about Industrial Organization broadly speaking, production functions and productivity, corporate taxation, market power, the political economy of market structures. My research combines economic theory and novel empirical methods to develop original identification strategies. In my research, I pay special attention to the role of latent variables in the underlying economic model and how those variables affect the identification of the parameters of interest. 
+I am an applied microeconomist specializing in industrial organization. A distinctive feature of my recent research is that it uses economic theory to model the role of unobservables in the data-generating process. Two threads run through and connect my recent and earlier research: strategic misconduct, and a focus on how market structure and its institutional environment shape agents' incentives.
 
-I am currently a PhD candidate in Economics at Western University. I will be in the 2026-2027 job market. 
+<!-- I'm an Applied Micro-economist. I am passionate about Industrial Organization broadly speaking, production functions and productivity, corporate taxation, market power, the political economy of market structures. My research combines economic theory and novel empirical methods to develop original identification strategies. In my research, I pay special attention to the role of latent variables in the underlying economic model and how those variables affect the identification of the parameters of interest.  -->
 
-Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html)
+I am currently a Ph.D. candidate in economics at Western University.
 
-<!-- {{< staticref "uploads/HansCV.pdf" "newtab" >}}resumé.{{< /staticref >}} -->
+**I will be on the 2026–2027 job market.**
+
+<!-- Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html) -->
+
+Download my CV: {{< staticref "uploads/HansMartinezCV.pdf" "newtab" >}}resumé.{{< /staticref >}}

@@ -29,8 +29,8 @@ content:
   # phone: 519 521 6849
   address:
     street: |
-      Deparment of Economics, Faculty of Social Science Faculty,
-      Western University 
+      Department of Economics, Faculty of Social Science,
+      Western University
     city: London
     region: 'ON'
     postcode: 'N6A 5C2'

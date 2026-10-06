@@ -1,7 +1,7 @@
 ---
 draft: false
 title: Cournot Rationalizability and Measurement Error
-summary: Do the observed prices and quantities in the international oil industry arise as an equilibrium of the Cournot model when quantities are mismeasured?
+summary: This paper tests whether firms compete by choosing quantities (Cournot competition) when quantities are measured with error. I extend @AK2020, who introduced measurement error into the Revealed Preference test [@Afriat1967], to the deterministic *Revealed Profitability* (RP) test of the Cournot model [@Carvajal2013].
 authors: [admin]
 date: "2022-05-14"
 tags:
@@ -33,9 +33,9 @@ share: false
 
 ## Abstract
 
-This paper introduces measurement error to the Revealed Preference test of the Cournot Model. In contrast to the standard approach, the Revealed Preference analysis relies only on shape restrictions, i.e., the convexity of the firm's cost function, but otherwise, no parametric assumptions are needed. In the application for the international market of crude oil, measurement errors might arise in the production quantities data due to the consolidation of information or coordination mistakes. Once measurement error is incorporated, the method requires a centering condition. Here, I assume that the quantity mismeasurement is uncorrelated with prices. In contrast to the deterministic version of the test, the Cournot model hypothesis can no longer be rejected.
+This paper tests whether firms compete by choosing quantities (Cournot competition) when quantities are measured with error. I extend @AK2020, who introduced measurement error into the Revealed Preference test [@Afriat1967], to the deterministic *Revealed Profitability* (RP) test of the Cournot model [@Carvajal2013]. The RP analysis derives a set of inequalities from the convexity of the firm's profit-maximization problem. The convexity stems from the demand function and the firm's cost function, which are both unknown, but the test does not require any parametric assumptions on either. Under the null hypothesis, firms compete in quantities, but observed quantities are mismeasured. To address the measurement error, the test needs only a centering condition, which fixes the location of the true quantities. If the test fails to reject the null hypothesis, it can then be inverted to answer counterfactual questions, such as how much firms would adjust their output in response to a change in price. I apply the method to the international crude oil market, where measurement error might arise from meter and gauge calibration, human recording errors, and the conversion of raw volumes to standard barrels. As the centering condition, I assume measured quantities are correct on average over each half-year. Unlike the deterministic test, the test allowing for measurement error no longer rejects the null hypothesis of Cournot competition at the 5 percent significance level. In this application, failing to account for measurement error thus leads to an over-rejection of the Cournot model.
 
-## Introduction
+<!-- ## Introduction
 
 Testing firm conduct has been a long-standing question in the field of Industrial Organization. Do firms compete in prices or quantities? Do they exert market power? If firms have market power, what are the losses in consumer welfare? How big are the inefficiencies in the market? The answers to these questions are relevant not only to policymakers and regulating agencies but to the public in general.
 
@@ -51,7 +51,7 @@ This paper develops a method to introduce ME to the RP test of the Cournot Model
 
 I find robust evidence that the Cournot hypothesis cannot be rejected even at the 10% significance level. The result stands at odds with the previous conclusion of the deterministic test. Thus, ignoring ME leads to an over-rejection of the RP test of oligopoly models, as is also the case on the consumer side {{< hugo-cite/hcite "AK2020" >}}. 
 
-Moreover, this result is a first step towards assessing the question of how much is driven by the parametric restrictions of the traditional approach. I discuss the future work derived from this paper, including a non-parametric test for market power and non-parametric bounds for markups and marginal costs.
+Moreover, this result is a first step towards assessing the question of how much is driven by the parametric restrictions of the traditional approach. I discuss the future work derived from this paper, including a non-parametric test for market power and non-parametric bounds for markups and marginal costs. -->
 
 
 ## References

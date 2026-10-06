@@ -1,9 +1,9 @@
 ---
 # Documentation: https://wowchemy.com/docs/managing-content/
 draft: true
-title: "Generative AI and Productivity in Canada: A production function approach"
+title: "Generative AI and Productivity in Canada: A Production Function Approach"
 summary: |
-  This project explores the impact of generative AI on productivity in Canada using a production function approach. The main challenge to identify the causal effect of genAI on producitivy is the endogeneity arising from more productive firms being more likely to adopt AI technologies and lack of data at the firm level on the adoption of genAI.  
+  This project explores the impact of generative AI on productivity in Canada using a production function approach. The main challenge in identifying the causal effect of genAI on productivity is endogeneity arising from more productive firms being more likely to adopt AI technologies, as well as a lack of firm-level data on genAI adoption.
 authors: [admin]
 tags: ["AI" , "Productivity","Production Function"]
 categories: []

@@ -41,6 +41,8 @@ title: #Research Statement
 
 # [Research Statement]({{< ref "statements/research/research_statement.md" >}})
 
-I’m an applied economist interested in Industrial Organization (IO). In particular, I specialize in productivity, frictions to measuring productivity, market power, and the political economy of oligopolies. I’m also interested in the intersections between IO and Labor and International Trade.
+I am an applied microeconomist specializing in industrial organization.
+
+<!-- I’m an applied economist interested in Industrial Organization (IO). In particular, I specialize in productivity, frictions to measuring productivity, market power, and the political economy of oligopolies. I’m also interested in the intersections between IO and Labor and International Trade. -->
 
 [(continue reading)]({{< ref "statements/research/research_statement.md" >}}) 
