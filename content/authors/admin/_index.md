@@ -20,7 +20,7 @@ interests:
 organizations:
 - name: Western University
   url: https://economics.uwo.ca
-role: Applied Economist
+role: Economics Ph.D. Candidate at
 social:
 - icon: envelope
   icon_pack: fas
@@ -48,9 +48,9 @@ I am an applied microeconomist specializing in industrial organization. A distin
 
 <!-- I'm an Applied Micro-economist. I am passionate about Industrial Organization broadly speaking, production functions and productivity, corporate taxation, market power, the political economy of market structures. My research combines economic theory and novel empirical methods to develop original identification strategies. In my research, I pay special attention to the role of latent variables in the underlying economic model and how those variables affect the identification of the parameters of interest.  -->
 
-I am currently a Ph.D. candidate in economics at Western University.
+<!-- I am currently a Ph.D. candidate in economics at Western University. -->
 
-**I will be on the 2026–2027 job market.**
+I will be on the **2026–2027 job market.**
 
 <!-- Download my CV: [{{< icon name="download" pack="fas" >}}](https://raw.githack.com/hans-mtz/DataCV/master/cv.html) -->
 
