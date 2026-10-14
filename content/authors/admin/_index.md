@@ -44,7 +44,7 @@ superuser: true
 title: Hans Martinez
 ---
 
-I am an applied microeconomist specializing in industrial organization. A distinctive feature of my recent research is that it uses economic theory to model the role of unobservables in the data-generating process. Two threads run through and connect my recent and earlier research: strategic misconduct, and a focus on how market structure and its institutional environment shape agents' incentives.
+I am an applied microeconomist specializing in industrial organization. A distinctive feature of my recent research is that it uses economic theory to model the role of unobservables in the data-generating process. Two threads play a prominent role in my research: strategic misconduct and an interest in how market structure and its institutional environments shape agents' incentives.
 
 <!-- I'm an Applied Micro-economist. I am passionate about Industrial Organization broadly speaking, production functions and productivity, corporate taxation, market power, the political economy of market structures. My research combines economic theory and novel empirical methods to develop original identification strategies. In my research, I pay special attention to the role of latent variables in the underlying economic model and how those variables affect the identification of the parameters of interest.  -->
 
