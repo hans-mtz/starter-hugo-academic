@@ -1,13 +1,12 @@
 ---
 draft: false
-title: Cournot Rationalizability and Measurement Error
+title: Cournot Profitability and Measurement Error
 summary: This paper tests whether firms compete by choosing quantities (Cournot competition) when quantities are measured with error. I extend Aguiar & Kashaev (2021), who introduced measurement error into the Revealed Preference test (Afriat, 1967), to the deterministic *Revealed Profitability* (RP) test of the Cournot model (Carvajal *et al.*, 2013).
 authors: [admin]
 date: "2022-05-14"
 tags:
-  - Firm Conduct
+  - Market Power
   - Cournot Competition
-  - Oil Industry
   - Measurement Error
 external_link: ""
 image:

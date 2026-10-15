@@ -5,7 +5,7 @@ title: "Tax evasion and Productivity (JMP)"
 summary: |
   Value-added taxes (VAT) allow firms to deduct the taxes paid on purchases from the taxes collected on sales, creating an incentive for firms to overreport the purchases of inputs to reduce their tax bill. The fundamental issue in detecting input overreporting stems from two unobservables, true inputs and productivity. Because firms differ in productivity, a firm reporting high input use, for a given level of output, may be either overreporting or simply less productive. To distinguish between overreporting and productivity, I use a structural production-function approach and a benchmark group, a subset of firms that report inputs correctly. Because the benchmark firms are assumed to share the same technology as the other firms, I estimate the technology's parameters from them. Using these estimates, I compare what potentially tax-evading firms report with predictions of the true inputs they would use. I apply the method to a Colombian manufacturing survey from 1981 to 1991. During this period, the Colombian sales tax worked as a VAT and the data include a subset of firms that, due to government and market scrutiny, reported inputs correctly.
 authors: [admin]
-tags: ["Tax evasion" , "Productivity","Production Function"]
+tags: ["Tax Evasion" , "Productivity","Production Function"]
 categories: []
 date: "2026-10-06"
 

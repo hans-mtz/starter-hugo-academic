@@ -29,8 +29,10 @@ content:
       tag: '*'
     - name: Productivity
       tag: Productivity
-    - name: Firm Conduct
-      tag: Firm Conduct
+    - name: Tax Evasion
+      tag: Tax Evasion
+    - name: Market Power
+      tag: Market Power
 
 design:
   # Choose how many columns the section has. Valid values: '1' or '2'.
