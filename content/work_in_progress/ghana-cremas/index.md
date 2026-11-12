@@ -6,7 +6,7 @@ summary:
 authors: [Timothy Conley, Isaac Luginaah, admin, Cornelius Pienaah]
 tags: ["Spatial Economics" , "Policy Evaluation","Development"]
 categories: []
-date: 
+date: "2026-11-01"
 
 # Optional external URL for project (replaces project detail page).
 external_link: ""

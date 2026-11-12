@@ -6,7 +6,7 @@ summary:
 authors: [Martin Petri, admin]
 tags: ["AI" , "Productivity","Experiment"]
 categories: []
-date: 
+date: "2025-04-28"
 
 # Optional external URL for project (replaces project detail page).
 external_link: ""

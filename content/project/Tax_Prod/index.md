@@ -23,13 +23,13 @@ image:
 # Custom links (optional).
 #   Uncomment and edit lines below to show custom links.
 links:
-- name: Follow
-  url: https://twitter.com/Hans_Mtz
-  icon_pack: fab
-  icon: twitter
+# - name: Follow
+#   url: https://twitter.com/Hans_Mtz
+#   icon_pack: fab
+#   icon: twitter
 
 url_code: ""
-url_pdf: ""
+url_pdf: "/uploads/HM-JMP.pdf"
 url_slides: ""
 url_video: ""
 

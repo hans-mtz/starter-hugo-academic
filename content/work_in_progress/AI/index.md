@@ -7,7 +7,7 @@ summary: |
 authors: [admin]
 tags: ["AI" , "Productivity","Production Function"]
 categories: []
-date: 
+date: "2025-09-19"
 
 # Optional external URL for project (replaces project detail page).
 external_link: ""

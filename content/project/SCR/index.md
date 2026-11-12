@@ -13,10 +13,10 @@ image:
   caption: Figure by Hans M.
   focal_point: Smart
 links:
-- icon: twitter
-  icon_pack: fab
-  name: Follow
-  url: https://twitter.com/Hans_Mtz
+# - icon: twitter
+#   icon_pack: fab
+#   name: Follow
+#   url: https://twitter.com/Hans_Mtz
 slides: ""
 url_code: ""
 url_pdf: ""

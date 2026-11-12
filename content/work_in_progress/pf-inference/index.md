@@ -6,7 +6,7 @@ summary:
 authors: [admin]
 tags: ["Inference" , "Spatial Economics","Production Function"]
 categories: []
-date: 
+date: "2024-08-20"
 
 # Optional external URL for project (replaces project detail page).
 external_link: ""

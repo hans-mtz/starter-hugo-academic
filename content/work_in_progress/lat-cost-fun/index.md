@@ -6,7 +6,7 @@ summary:
 authors: [admin]
 tags: ["Cost Function" , "Homogeneous Goods"]
 categories: []
-date: 
+date: "2023-03-10"
 
 # Optional external URL for project (replaces project detail page).
 external_link: ""

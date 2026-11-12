@@ -1,7 +1,7 @@
 ---
 title: Research Statement
 share: false
-date: "2023-04-08"
+date: "2026-11-11"
 profile: true
 author: admin
 comments: false
@@ -12,15 +12,15 @@ header:
   image: ""
 ---
 
-I am an applied microeconomist specializing in industrial organization.
+I am an applied microeconomist specializing in industrial organization (IO). A distinctive feature of my research is that it uses economic theory to model the role of unobservables in the data-generating process. Two threads play a prominent role in my research: strategic misconduct and how institutions shape agents' incentives.
 
-A distinctive feature of my latest research is that it uses economic theory to model the role of unobservables in the data-generating process. For example, in my job market paper, the key unobserved variables are firms' input overreporting and productivity. The optimality conditions of the firm's problem help me distinguish the low-productivity firm from the tax evader. In my summer paper, the key unobserved variable, added to the Revealed Profitability test of the Cournot model, is the measurement error in quantities. Again, the firm's optimization problem implies a set of inequalities that can be tested on data; the question is whether the test still rejects Cournot competition once quantities are mismeasured.
+A distinctive feature of my research consists in using economic theory to model the role of unobservables in the data-generating process. For example, in my job market paper (JMP) *Tax Evasion and Productivity*, the key unobserved variables are firms' input overreporting and productivity. A value-added tax (VAT) credits the tax paid on materials against the tax collected on sales. This credit incentivizes firms to overreport materials to reduce their VAT bill. The fundamental problem in distinguishing between productivity and overreporting is that tax-evading firms might look like low-productivity firms. That is, for a given level of output, high reported materials may come from a firm that is fictitiously increasing its materials bill to claim larger credits, or from a firm with low productivity. However, firms' optimal overreporting responds to the tax rate, while optimal input usage, given productivity, does not. Therefore, the optimality conditions of the firm's problem, together with a benchmark group of firms that do not overreport, let me distinguish the low-productivity firm from the tax evader, up to measurement error.
 
-Two threads run through and connect my research.
+Two threads are prominent in my research. The first thread is strategic misconduct. I define strategic misconduct broadly as illegal or unethical decisions that agents take rationally to increase their utility or profits. In my JMP, I study how firms optimally evade taxes to increase their after-tax profits. Although evasion is illegal, firms optimally choose how much to overreport. Firms weigh the tax saved on an additional dollar of overreported materials against the marginal cost of evasion, including a higher probability of detection.
 
-The first thread is strategic misconduct. In recent work, I study how firms evade taxes, and how firms collude to extract rents. In earlier work, I studied how incumbent politicians capture the media to stay in power.
+The second thread is how institutions shape agents' incentives. In my JMP, the fiscal environment leads firms to overreport their inputs. I use survey data from manufacturing firms in Colombia between 1981 and 1991. Colombia in this period offers an ideal setting to study how taxes shape firms' incentives. Tax rates on sales and on purchases differed, and the gap varied by industry. Some industries were exempt from VAT. Furthermore, a 1983 fiscal reform increased the VAT rate for most industries, but exempt industries remained exempt, providing a natural comparison group. Together, these features let me study how overreporting responds to the tax rate.
 
-The second thread is a focus on how market structure and the environments in which markets are embedded affect market outcomes and generate incentives to which agents respond. In recent work, the fiscal environment leads firms to misreport their inputs. In earlier work, high concentration in the media market makes the media easier to capture, which is what leads incumbent politicians to capture the media.
+My ongoing and future work will focus on advancing our understanding of how institutions shape the incentives of firms and other agents, sometimes leading them to engage in strategic misconduct. It will also focus on how I can answer these questions using economic theory and modern econometric tools when critical variables are missing from the data, either because they are hard to measure or because agents hide the information.
 
 <!--
 I’m an applied economist interested in Industrial Organization (IO). In particular, I specialize in productivity, frictions to measuring productivity, market power, and the political economy of oligopolies. I’m also interested in the intersections between IO and Labor and International Trade.
