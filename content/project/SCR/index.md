@@ -20,7 +20,7 @@ links:
 slides: ""
 url_code: ""
 url_pdf: ""
-url_slides: https://raw.githack.com/hans-mtz/Slides/main/Gen/SP_05-2022.html
+url_slides: ""
 url_video: ""
 share: false
 # bibFile: content/project/SCR/bib.json
